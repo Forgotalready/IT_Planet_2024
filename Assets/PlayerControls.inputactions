@@ -42,9 +42,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Rotation",
+                    "name": "RotationRight",
                     "type": "Button",
                     "id": "ae8d4b74-f588-42aa-b664-3bf1df44ef5a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RotationLeft",
+                    "type": "Button",
+                    "id": "870dc514-2bfa-4f0c-af82-683b639629d2",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -121,11 +130,22 @@
                 {
                     "name": "",
                     "id": "f761a686-9869-4d58-b4a0-aaa0681570e5",
-                    "path": "<Keyboard>/r",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Rotation",
+                    "action": "RotationRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce9e17e0-afae-45d7-8507-eceb4d58d7f4",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotationLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

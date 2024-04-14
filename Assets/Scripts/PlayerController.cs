@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _sprintCoef = 1.5f;
+    private float _rotationAngle = 90f;
+    private float _rotationAlongY;
 
     [Header("Jump Settings")]
     [SerializeField] private float _jumpForce = 10f;
@@ -25,7 +27,8 @@ public class PlayerController : MonoBehaviour
     private bool _isWalking = false;
     private bool _isSprinting = false;
 
-    private bool _isRotate = false;
+    private bool _isRotateRight = false;
+    private bool _isRotateLeft = false;
     private bool _switchMap = false;
 
     private PlayerInput _playerInput;
@@ -41,6 +44,7 @@ public class PlayerController : MonoBehaviour
         Instance = this;
         _rigidbody = GetComponent<Rigidbody>();
         _playerInput = GetComponent<PlayerInput>();
+        _rotationAlongY = transform.rotation.y;
     }
 
     private void Start()
@@ -63,17 +67,21 @@ public class PlayerController : MonoBehaviour
             IsInteract();
         }
 
-        if (_playerInputHandler.rotateTriggered)
+        if(_playerInputHandler.rotateLeftTriggered)
         {
-            RotatePlayer();
+            RotatePlayerLeft();
         }
-        if (_isRotate)
+        else if (_playerInputHandler.rotateRightTriggered)
         {
-            this.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, -90, 0), Time.deltaTime * 10f);
+            RotatePlayerRight(); 
         }
-        else
+        if(_isRotateLeft)
         {
-            this.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 10f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, _rotationAlongY, 0), Time.deltaTime * 10f);
+        }
+        if (_isRotateRight) 
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, _rotationAlongY, 0), Time.deltaTime * 10f);
         }
     }
 
@@ -116,13 +124,21 @@ public class PlayerController : MonoBehaviour
     private void ApplyMovement()
     {
         float speed = _moveSpeed * (_playerInputHandler.sprintValue > 0 ? _sprintCoef : 1f);
-        if (_isRotate)
+        if (_rotationAlongY == 0f || _rotationAlongY == 360f || _rotationAlongY == -360f)
+        {
+            _rigidbody.velocity = new Vector3(_horizontalInput * speed, _rigidbody.velocity.y, _rigidbody.velocity.z);
+        }
+        else if (_rotationAlongY == 180f || _rotationAlongY == -180f)
+        {
+            _rigidbody.velocity = new Vector3(-_horizontalInput * speed, _rigidbody.velocity.y, _rigidbody.velocity.z);
+        }
+        else if(_rotationAlongY == -90f || _rotationAlongY == 270f)
         {
             _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, _rigidbody.velocity.y, _horizontalInput * speed);
         }
         else
         {
-            _rigidbody.velocity = new Vector3(_horizontalInput * speed, _rigidbody.velocity.y, _rigidbody.velocity.z);
+            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, _rigidbody.velocity.y, -_horizontalInput * speed);
         }
         if (Mathf.Abs(_horizontalInput) > 0)
             _isWalking = true;
@@ -149,11 +165,25 @@ public class PlayerController : MonoBehaviour
             _isGrounded = true;
         }
     }
-
-    void RotatePlayer()
+    private void RotatePlayerLeft()
     {
-        _playerInputHandler.rotateTriggered = false;
-        _isRotate = !_isRotate;
+        _rotationAlongY += _rotationAngle;
+        if (_rotationAlongY == 450f)
+            _rotationAlongY = 90;
+        Debug.Log(_rotationAlongY);
+        _playerInputHandler.rotateLeftTriggered = false;
+        _isRotateLeft = true;
+        _isRotateRight = false;
+    }
+    void RotatePlayerRight()
+    {
+        _rotationAlongY -= _rotationAngle;
+        if (_rotationAlongY == -450f)
+            _rotationAlongY = -90;
+        Debug.Log(_rotationAlongY);
+        _playerInputHandler.rotateRightTriggered = false;
+        _isRotateRight = true;
+        _isRotateLeft = false;
     }
 
     private void FlipSprite(float input)
@@ -212,5 +242,6 @@ public class PlayerController : MonoBehaviour
     {
         _interactableObject = null;
         _interactableObjectTransform = null;
+        _interactableObjectsTag = null;
     }
 }

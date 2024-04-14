@@ -18,13 +18,15 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private string _jump = "Jump";
     [SerializeField] private string _sprint = "Sprint";
     [SerializeField] private string _interact = "Interact";
-    [SerializeField] private string _rotate = "Rotation";
+    [SerializeField] private string _rotateRight = "RotationRight";
+    [SerializeField] private string _rotateLeft = "RotationLeft";
 
     private InputAction _moveAction;
     private InputAction _jumpAction;
     private InputAction _sprintAction;
     private InputAction _interactAction;
-    private InputAction _rotateAction;
+    private InputAction _rotateActionRight;
+    private InputAction _rotateActionLeft;
     private InputAction _switchActionMap;
 
     public static Action<string> OnSwitch;
@@ -33,7 +35,8 @@ public class PlayerInputHandler : MonoBehaviour
     public bool jumpTriggered { get; private set; }
     public float sprintValue { get; private set; }
     public bool interactTriggered { get; set; }
-    public bool rotateTriggered { get; set; }
+    public bool rotateRightTriggered { get; set; }
+    public bool rotateLeftTriggered { get; set; }
     public string actionMapName { get; private set; }
 
     public static PlayerInputHandler Instance { get; private set; }
@@ -54,13 +57,10 @@ public class PlayerInputHandler : MonoBehaviour
         _jumpAction = _playerControls.FindActionMap(_actionMapName).FindAction(_jump);
         _sprintAction = _playerControls.FindActionMap(_actionMapName).FindAction(_sprint);
         _interactAction = _playerControls.FindActionMap(_actionMapName).FindAction(_interact);
-        _rotateAction = _playerControls.FindActionMap(_actionMapName).FindAction(_rotate);
+        _rotateActionRight = _playerControls.FindActionMap(_actionMapName).FindAction(_rotateRight);
+        _rotateActionLeft = _playerControls.FindActionMap(_actionMapName).FindAction(_rotateLeft);
         actionMapName = _actionMapName;
         _switchActionMap = _playerControls.FindActionMap(_secondActionMapName).FindAction(_interact);
-
-        Debug.Log(_switchActionMap);
-        
-
         RegisterInputActions();
     }
 
@@ -80,13 +80,13 @@ public class PlayerInputHandler : MonoBehaviour
         _interactAction.performed += SwitchActionMap;
         
 
-        _rotateAction.performed += context => rotateTriggered = true;
+        _rotateActionRight.performed += context => rotateRightTriggered = true;
+        _rotateActionLeft.performed += context => rotateLeftTriggered = true;
     }
 
     private void SwitchActionMap(InputAction.CallbackContext context)
     {
         OnSwitch?.Invoke("InteractionObject");
-        Debug.Log("Я вызываюсь");
     }
 
 
@@ -97,7 +97,8 @@ public class PlayerInputHandler : MonoBehaviour
         _jumpAction.Enable();
         _sprintAction.Enable();
         _interactAction.Enable();
-        _rotateAction.Enable();
+        _rotateActionRight.Enable();
+        _rotateActionLeft.Enable();
     }
 
     private void OnDisable()
@@ -106,7 +107,8 @@ public class PlayerInputHandler : MonoBehaviour
         _jumpAction.Disable();
         _sprintAction.Disable();
         _interactAction.Disable();
-        _rotateAction.Disable();
+        _rotateActionRight.Disable();
+        _rotateActionLeft.Disable();
     }
 
 }
