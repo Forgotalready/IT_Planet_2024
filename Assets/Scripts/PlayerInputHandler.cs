@@ -76,6 +76,7 @@ public class PlayerInputHandler : MonoBehaviour
         _sprintAction.canceled += context => sprintValue = 0f;
 
         _interactAction.performed += context => interactTriggered = true;
+        _switchActionMap.performed += context => interactTriggered = true;
         _switchActionMap.performed += SwitchActionMap;
         _interactAction.performed += SwitchActionMap;
         
