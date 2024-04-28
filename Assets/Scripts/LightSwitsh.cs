@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(Outline))]
 public class LightSwitsh : MonoBehaviour, IInteractable
 {
     [SerializeField] private Light[] _lights;
@@ -15,23 +16,20 @@ public class LightSwitsh : MonoBehaviour, IInteractable
     private void Awake()
     {
         _outline = GetComponent<Outline>();
+        _outline.OutlineWidth = 0f;
     }
     private void Update()
     {
         _interactionText.text = GetDescription();
     }
 
-    private void OnTriggerEnter(Collider collision)
+    public void OutlineEnable()
     {
-        _interactionUI.SetActive(true);
-        _outline.enabled = true;
-
+        _outline.OutlineWidth = 2f;
     }
-
-    private void OnTriggerExit(Collider collision)
+    public void OutlineDisable()
     {
-        _interactionUI.SetActive(false);
-        _outline.enabled = false;
+        _outline.OutlineWidth = 0f;
     }
 
     public void Interact()

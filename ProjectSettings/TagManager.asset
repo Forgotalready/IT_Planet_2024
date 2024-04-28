@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Interactable
+  - Wall
+  - Inventory
   layers:
   - Default
   - TransparentFX

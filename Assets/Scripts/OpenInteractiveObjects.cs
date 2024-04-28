@@ -2,35 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Outline))]
 public class OpenInteractiveObjects : MonoBehaviour, IInteractable
 {
     private Outline _outline;
-    private bool isOpen = false;
+    private bool _isOpen = false;
 
     private void Awake()
     {
         _outline = GetComponent<Outline>();
-        _outline.enabled = false;
+        _outline.OutlineWidth = 0f;
     }
-    private void OnTriggerEnter(Collider collision)
+    public void OutlineEnable()
     {
-        _outline.enabled = true;
+        _outline.OutlineWidth = 2f;
     }
 
-    private void OnTriggerExit(Collider collision)
+    public void OutlineDisable() 
     {
-        _outline.enabled = false;
+        _outline.OutlineWidth = 0f;
     }
     public void Interact()
     {
-        isOpen = !isOpen;
-        GetComponent<Animator>().SetBool("Open", isOpen);
-        GetComponent<Animator>().SetBool("Close", !isOpen);
+        _isOpen = !_isOpen;
+        GetComponent<Animator>().SetBool("Open", _isOpen);
+        GetComponent<Animator>().SetBool("Close", !_isOpen);
     }
 
     public string GetDescription()
     {
-        if (isOpen) return "Выкл";
-        return "Вкл";
+        return "";
     }
 }

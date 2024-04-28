@@ -15,17 +15,13 @@ public class PlayerController : MonoBehaviour
     private float _rotationAngle = 90f;
     private float _rotationAlongY;
 
-    [Header("Jump Settings")]
-    [SerializeField] private float _jumpForce = 10f;
-
     private Rigidbody _rigidbody;
     private PlayerInputHandler _playerInputHandler;
     private float _horizontalInput;
-    private bool _isGrounded;
-    private bool _shouldJump;
 
     private bool _isWalking = false;
     private bool _isSprinting = false;
+    private bool _isSitting = false;
 
     private bool _isRotateRight = false;
     private bool _isRotateLeft = false;
@@ -35,9 +31,11 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private CinemachineVirtualCamera _camera;
 
-    private IInteractable _interactableObject;
-    private Transform _interactableObjectTransform;
+    private GameObject _interactableObject;
+    
     private string _interactableObjectsTag;
+    private GameObject _previousInteractableObject;
+    [SerializeField] private float _interactionDistance = 2f;
 
     private void Awake()
     {
@@ -55,12 +53,13 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _horizontalInput = _playerInputHandler.moveInput.x;
-        _shouldJump = _playerInputHandler.jumpTriggered && _isGrounded;
 
         if (_horizontalInput != 0)
         {
             FlipSprite(_horizontalInput);
         }
+
+        InteractionRay();
 
         if (_playerInputHandler.interactTriggered)
         {
@@ -108,22 +107,27 @@ public class PlayerController : MonoBehaviour
             {
                 _playerInput.SwitchCurrentActionMap("Player");
             }
-            CameraFollowChange();
         }
     }
 
     private void FixedUpdate()
     {
         ApplyMovement();
-        if (_shouldJump)
-        {
-            ApplyJump();
-        }
     }
 
     private void ApplyMovement()
     {
+
         float speed = _moveSpeed * (_playerInputHandler.sprintValue > 0 ? _sprintCoef : 1f);
+
+        if (_playerInputHandler.sitTrigger)
+        {
+            _isSitting = true;
+            speed = 0f;
+        }
+        else
+            _isSitting = false;
+
         if (_rotationAlongY == 0f || _rotationAlongY == 360f || _rotationAlongY == -360f)
         {
             _rigidbody.velocity = new Vector3(_horizontalInput * speed, _rigidbody.velocity.y, _rigidbody.velocity.z);
@@ -149,28 +153,14 @@ public class PlayerController : MonoBehaviour
             _isSprinting = true;
         else
             _isSprinting = false;
-    }
 
-    void ApplyJump()
-    {
-        _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
-        _isGrounded = false;
-        _shouldJump = false;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            _isGrounded = true;
-        }
+        
     }
     private void RotatePlayerLeft()
     {
         _rotationAlongY += _rotationAngle;
         if (_rotationAlongY == 450f)
             _rotationAlongY = 90;
-        Debug.Log(_rotationAlongY);
         _playerInputHandler.rotateLeftTriggered = false;
         _isRotateLeft = true;
         _isRotateRight = false;
@@ -180,7 +170,6 @@ public class PlayerController : MonoBehaviour
         _rotationAlongY -= _rotationAngle;
         if (_rotationAlongY == -450f)
             _rotationAlongY = -90;
-        Debug.Log(_rotationAlongY);
         _playerInputHandler.rotateRightTriggered = false;
         _isRotateRight = true;
         _isRotateLeft = false;
@@ -203,23 +192,9 @@ public class PlayerController : MonoBehaviour
         _playerInputHandler.interactTriggered = false;
         if (_interactableObject != null)
         {
-            _interactableObject.Interact();
+            _interactableObject.GetComponent<IInteractable>().Interact();
         }
     }
-    private void CameraFollowChange()
-    {
-        if (_switchMap)
-        {
-            _camera.Follow = _interactableObjectTransform;
-            _camera.m_Lens.FieldOfView = 50f;
-        }
-        else
-        {
-            _camera.Follow = transform;
-            _camera.m_Lens.FieldOfView = 100f;
-        }
-    }
-
 
     public bool IsWalking()
     {
@@ -231,17 +206,44 @@ public class PlayerController : MonoBehaviour
         return _isSprinting;
     }
 
-    private void OnTriggerEnter(Collider collision)
+    public bool IsSitting()
     {
-        _interactableObject = collision.GetComponent<IInteractable>();
-        _interactableObjectTransform = collision.gameObject.transform;
-        _interactableObjectsTag = collision.gameObject.tag;
+        return _isSitting;
     }
 
-    private void OnTriggerExit(Collider collision)
+    void InteractionRay()
     {
-        _interactableObject = null;
-        _interactableObjectTransform = null;
-        _interactableObjectsTag = null;
+        Ray ray = new Ray(transform.localPosition, transform.forward);
+        RaycastHit hit;
+
+
+        if(Physics.Raycast(ray, out hit, _interactionDistance) && hit.collider.gameObject.tag =="Interactable")
+        {
+            _interactableObject = hit.collider.gameObject;
+            if(_interactableObject != null)
+            {
+                if(_interactableObject != _previousInteractableObject)
+                {
+                    _interactableObject.GetComponent<IInteractable>().OutlineEnable();
+                    GameState.Instance.choseObject = _interactableObject;
+                    _previousInteractableObject = _interactableObject;
+                    Debug.Log(GameState.Instance.choseObject.name + " Тест");
+                }
+            }
+        }
+        else
+        {
+            if(_previousInteractableObject != null)
+            {
+                _previousInteractableObject.GetComponent<IInteractable>().OutlineDisable();
+                _previousInteractableObject = null;
+            }
+            _interactableObject = null;
+            GameState.Instance.choseObject = null;
+        }
+
+        
+
+        Debug.DrawRay(ray.origin, ray.direction, Color.red);
     }
 }
