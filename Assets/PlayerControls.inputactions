@@ -15,15 +15,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "a0e91d4f-a4a9-4c5f-b2af-9c241a0971ed",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Sprint",
                     "type": "Button",
                     "id": "c306ee0d-b7ba-401a-ad57-3a87bc478e99",
@@ -42,9 +33,27 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Rotation",
+                    "name": "RotationRight",
                     "type": "Button",
                     "id": "ae8d4b74-f588-42aa-b664-3bf1df44ef5a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RotationLeft",
+                    "type": "Button",
+                    "id": "870dc514-2bfa-4f0c-af82-683b639629d2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Sit",
+                    "type": "Button",
+                    "id": "43254183-a83a-48c3-a049-06c588d5d232",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -87,17 +96,6 @@
                 },
                 {
                     "name": "",
-                    "id": "3c1d7186-9ce6-4113-a7f5-8a2c780d3ab5",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5532c60a-739b-4494-ba83-843be21b2834",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
@@ -121,11 +119,33 @@
                 {
                     "name": "",
                     "id": "f761a686-9869-4d58-b4a0-aaa0681570e5",
-                    "path": "<Keyboard>/r",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Rotation",
+                    "action": "RotationRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce9e17e0-afae-45d7-8507-eceb4d58d7f4",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotationLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ef7c080f-d401-43fe-a5a2-7148b2d71d88",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sit",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

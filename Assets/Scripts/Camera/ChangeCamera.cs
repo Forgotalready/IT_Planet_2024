@@ -12,7 +12,7 @@ public class ChangeCamera : MonoBehaviour
     void Update()
     {
 
-        if (PlayerInputHandler.Instance.rotateTriggered)//(Input.GetKeyDown(KeyCode.R))
+        if (PlayerInputHandler.Instance.rotateRightTriggered)//(Input.GetKeyDown(KeyCode.R))
         {
             if (!isMoved)
             {

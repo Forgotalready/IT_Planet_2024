@@ -15,6 +15,6 @@ public class AnimationController : MonoBehaviour
     {
         _animator.SetBool("isWalking", PlayerController.Instance.IsWalking());
         _animator.SetBool("isSprinting", PlayerController.Instance.IsSprinting());
-        _animator.SetBool("isJumping", PlayerInputHandler.Instance.jumpTriggered);
+        _animator.SetBool("isSitting", PlayerController.Instance.IsSitting());
     }
 }
