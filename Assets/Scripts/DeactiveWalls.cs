@@ -5,9 +5,12 @@ using UnityEngine;
 public class DeactiveWalls : MonoBehaviour
 {
     private GameObject hittedObject;
-    [SerializeField] private float _rayDistance = 5f;
+    private float _rayDistance = 5f;
+    [SerializeField] private GameObject Player;
+
     void FixedUpdate()
     {
+        _rayDistance = Vector3.Distance(transform.position, Player.transform.position);
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, _rayDistance))
         {
