@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngineInternal;
 
 
 public class PlayerController : MonoBehaviour
@@ -244,6 +245,6 @@ public class PlayerController : MonoBehaviour
 
         
 
-        Debug.DrawRay(ray.origin, ray.direction, Color.red);
+        //Debug.DrawRay(ray.origin, ray.direction, Color.red);
     }
 }
