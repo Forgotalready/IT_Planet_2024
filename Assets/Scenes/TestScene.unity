@@ -3204,14 +3204,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _outline: {fileID: 8164078559557225064}
   _videoClips:
-  - {fileID: 32900000, guid: 86331ddd84318834db7c8123644784b7, type: 3}
-  - {fileID: 32900000, guid: 95328b6720fff5e449c525364ce04460, type: 3}
-  - {fileID: 32900000, guid: f288c7b778376254ca59462f5963cf5d, type: 3}
-  - {fileID: 32900000, guid: 098204ba17c3296498ea4b834a73b318, type: 3}
-  - {fileID: 32900000, guid: 2241e14ba3a3fad4388529e6cbba4ff9, type: 3}
-  - {fileID: 32900000, guid: 9a6b8a87008426648b2a6b7f3054fbf0, type: 3}
-  - {fileID: 32900000, guid: 5b10abd8ae481544da7a71648e16c633, type: 3}
-  - {fileID: 32900000, guid: b120afd0822ef8742bcaa3c9e7882ef4, type: 3}
+  - {fileID: 32900000, guid: cb70442f52892ec4dac3131dd6e48251, type: 3}
+  - {fileID: 32900000, guid: c8026040725dbc540b216078354fb429, type: 3}
+  - {fileID: 32900000, guid: 343d33dcbcbfa1f4985a9746adaef5ed, type: 3}
+  - {fileID: 32900000, guid: ac2bb0caffb93484a8797768af0992ca, type: 3}
+  - {fileID: 32900000, guid: cc47012d059a5994996e5369a4e00c9a, type: 3}
   _tvPlayer: {fileID: 2056361830}
 --- !u!4 &1382790801 stripped
 Transform:
