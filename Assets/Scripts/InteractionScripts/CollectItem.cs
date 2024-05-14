@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -14,10 +15,11 @@ public class CollectItem : MonoBehaviour, IInteractable
     private void Awake()
     {
         _outline = GetComponent<Outline>();
-        _outline.OutlineWidth = 0f;
+        _outline.enabled = false;
     }
     void PickUp()
     {
+        _outline.enabled = false;
         Destroy(gameObject);
     }
 
@@ -29,12 +31,12 @@ public class CollectItem : MonoBehaviour, IInteractable
 
     public void OutlineEnable()
     {
-        _outline.OutlineWidth = 2f;
+        _outline.enabled = true;
     }
 
     public void OutlineDisable()
     {
-        _outline.OutlineWidth = 0f;
+        _outline.enabled = false;
     }
 
     public string GetDescription()

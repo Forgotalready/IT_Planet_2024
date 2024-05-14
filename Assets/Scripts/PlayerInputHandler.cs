@@ -21,13 +21,16 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private string _rotateLeft = "RotationLeft";
     [SerializeField] private string _sit = "Sit";
 
+    [SerializeField] private string _leaveInteraction = "LeaveInteraction";
+
     private InputAction _moveAction;
     private InputAction _sprintAction;
     private InputAction _interactAction;
     private InputAction _rotateActionRight;
     private InputAction _rotateActionLeft;
-    private InputAction _switchActionMap;
     private InputAction _sitAction;
+
+    private InputAction _switchActionMap;
 
     public static Action<string> OnSwitch;
 
@@ -59,8 +62,10 @@ public class PlayerInputHandler : MonoBehaviour
         _rotateActionRight = _playerControls.FindActionMap(_actionMapName).FindAction(_rotateRight);
         _rotateActionLeft = _playerControls.FindActionMap(_actionMapName).FindAction(_rotateLeft);
         actionMapName = _actionMapName;
-        _switchActionMap = _playerControls.FindActionMap(_secondActionMapName).FindAction(_interact);
         _sitAction = _playerControls.FindActionMap(_actionMapName).FindAction(_sit);
+
+        _switchActionMap = _playerControls.FindActionMap(_secondActionMapName).FindAction(_leaveInteraction);
+
         RegisterInputActions();
     }
 
@@ -87,7 +92,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void SwitchActionMap(InputAction.CallbackContext context)
     {
-        OnSwitch?.Invoke("InteractionObject");
+        OnSwitch?.Invoke(_secondActionMapName);
     }
 
 
@@ -100,6 +105,8 @@ public class PlayerInputHandler : MonoBehaviour
         _rotateActionRight.Enable();
         _rotateActionLeft.Enable();
         _sitAction.Enable();
+
+        _switchActionMap.Enable();
     }
 
     private void OnDisable()
@@ -110,6 +117,8 @@ public class PlayerInputHandler : MonoBehaviour
         _rotateActionRight.Disable();
         _rotateActionLeft.Disable();
         _sitAction.Disable();
+
+        _switchActionMap.Disable();
     }
 
 }

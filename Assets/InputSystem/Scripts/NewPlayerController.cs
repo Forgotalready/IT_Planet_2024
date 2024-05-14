@@ -1,0 +1,201 @@
+using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class NewPlayerController : MonoBehaviour
+{
+
+    private InputAction _moveAction;
+    private InputAction _sprintAction;
+    private InputAction _hidingAction;
+
+    [SerializeField] GameObject _playerVisual;
+    private Animator _animator;
+
+    [Header("Movement Settings")]
+    [SerializeField] private float _speed;
+    [SerializeField] private float _sprintCoef = 1.5f;
+    [SerializeField] private float _interactionDistance = 2f;
+
+    private Vector3 forceDiraction = Vector3.zero;
+    private Rigidbody _rigidbody;
+
+    [SerializeField] private float _rotationSpeed = 10f;
+    private float _rotationAngle = 90f;
+    private float _rotationAlongY;
+    private bool _isRotateRight = false;
+    private bool _isRotateLeft = false;
+
+
+    private GameObject _interactableObject;
+    private GameObject _previousInteractableObject;
+    private void Start()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+        _animator = _playerVisual.GetComponent<Animator>();
+    }
+
+    private void OnEnable()
+    {
+        _moveAction = InputManager.inputActions.Gameplay.Movement;
+        _sprintAction = InputManager.inputActions.Gameplay.Sprint;
+        _hidingAction = InputManager.inputActions.Gameplay.Sit;
+        InputManager.inputActions.Gameplay.RotationRight.started += DoRotationRigth;
+        InputManager.inputActions.Gameplay.RotationLeft.started += DoRotationLeft;
+        InputManager.inputActions.Gameplay.Interact.started += Interact;
+        InputManager.inputActions.InteractionObject.LeaveInteraction.started += Leave;
+    }
+
+
+    private void OnDisable()
+    {
+        InputManager.inputActions.Gameplay.RotationRight.started -= DoRotationRigth;
+        InputManager.inputActions.Gameplay.RotationLeft.started -= DoRotationLeft;
+        InputManager.inputActions.Gameplay.Interact.started -= Interact;
+        InputManager.inputActions.InteractionObject.LeaveInteraction.started -= Leave;
+    }
+
+    private void Interact(InputAction.CallbackContext obj)
+    {
+        if (_interactableObject != null)
+        {
+            _interactableObject.GetComponent<IInteractable>().Interact();
+            InputManager.ToggleActionMap(InputManager.inputActions.InteractionObject);
+        }
+    }
+    private void Leave(InputAction.CallbackContext obj)
+    {
+        if (_interactableObject != null)
+        {
+            _interactableObject.GetComponent<IInteractable>().Interact();
+            InputManager.ToggleActionMap(InputManager.inputActions.Gameplay);
+        }
+    }
+
+    private void DoRotationLeft(InputAction.CallbackContext context)
+    {
+        _rotationAlongY += _rotationAngle;
+        if (_rotationAlongY == 450f)
+            _rotationAlongY = 90;
+        _isRotateLeft = true;
+        _isRotateRight = false;
+    }
+
+    private void DoRotationRigth(InputAction.CallbackContext context)
+    {
+        _rotationAlongY -= _rotationAngle;
+        if (_rotationAlongY == -450f)
+            _rotationAlongY = -90;
+        _isRotateRight = true;
+        _isRotateLeft = false;
+    }
+
+    private void FixedUpdate()
+    {
+        ApplyMovement();
+        _animator.SetFloat("xVelocity", _rigidbody.velocity.magnitude/(_speed * _sprintCoef));
+    }
+
+    private void Update()
+    {
+        FlipSprite(_moveAction.ReadValue<Vector2>().x);
+        if (_isRotateLeft)
+        {
+            _playerVisual.transform.rotation = Quaternion.Lerp(_playerVisual.transform.rotation, Quaternion.Euler(0, _rotationAlongY, 0), _rotationSpeed * Time.deltaTime);
+        }
+        if (_isRotateRight)
+        {
+            _playerVisual.transform.rotation = Quaternion.Lerp(_playerVisual.transform.rotation, Quaternion.Euler(0, _rotationAlongY, 0), _rotationSpeed * Time.deltaTime);
+        }
+        InteractionRay();
+    }
+
+    private void ApplyMovement()
+    {
+        float speed = _speed * (_sprintAction.IsPressed() ? _sprintCoef : 1f);
+
+        if(_hidingAction.IsPressed())
+        {
+            _animator.SetBool("isHiding", true);
+            return;
+        }
+        else
+        {
+            _animator.SetBool("isHiding", false);
+        }
+
+        float horizontalInput = _moveAction.ReadValue<Vector2>().x;
+
+        if (_rotationAlongY == 0f || _rotationAlongY == 360f || _rotationAlongY == -360f)
+        {
+            forceDiraction += horizontalInput * transform.right * speed;
+        }
+        else if (_rotationAlongY == 180f || _rotationAlongY == -180f)
+        {
+            forceDiraction -= horizontalInput * transform.right * speed;
+        }
+        else if (_rotationAlongY == -90f || _rotationAlongY == 270f)
+        {
+            forceDiraction += horizontalInput * transform.forward * speed;
+        }
+        else
+        {
+            forceDiraction -= horizontalInput * transform.forward * speed;
+        }
+
+        _rigidbody.AddForce(forceDiraction, ForceMode.Impulse);
+        forceDiraction = Vector3.zero;
+
+        Vector3 horizontalVelocity = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
+        if (horizontalVelocity.magnitude > speed)
+        {
+            Vector3 limitedVelocity = horizontalVelocity.normalized * speed;
+            _rigidbody.velocity = new Vector3(limitedVelocity.x, 0f, limitedVelocity.z);
+        }
+    }
+
+    private void FlipSprite(float input)
+    {
+        if (input > 0)
+        {
+            _playerVisual.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+        }
+        else if (input < 0)
+        {
+            _playerVisual.transform.localScale = new Vector3(-0.7f, 0.7f, 0.7f);
+        }
+    }
+
+    private void InteractionRay()
+    {
+        Ray ray = new Ray(_playerVisual.transform.position, _playerVisual.transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, _interactionDistance))
+        {
+            string tag = hit.collider.gameObject.tag;
+            if (tag == "CameraChangingObject")
+            {
+                _interactableObject = hit.collider.gameObject;
+                if (_interactableObject != null && _interactableObject != _previousInteractableObject)
+                {
+                    _interactableObject.GetComponent<IInteractable>().OutlineEnable();
+                    _previousInteractableObject = _interactableObject;
+                }
+            }
+        }
+        else
+        {
+            if (_previousInteractableObject != null)
+            {
+                _previousInteractableObject.GetComponent<IInteractable>().OutlineDisable();
+                _previousInteractableObject = null;
+            }
+            _interactableObject = null;
+        }
+
+
+
+        Debug.DrawRay(ray.origin, ray.direction, Color.red);
+    }
+}
