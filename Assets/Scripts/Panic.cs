@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
+using System;
 
 public class Panic : MonoBehaviour
 {
@@ -12,6 +13,11 @@ public class Panic : MonoBehaviour
     [SerializeField] private GameObject panel;
     private Image img;
     [SerializeField] private float darkCoef = 1;
+
+    private bool isPanicFirst = true;
+
+
+
     private void Start()
     {
         img = panel.GetComponent<Image>();
@@ -37,6 +43,11 @@ public class Panic : MonoBehaviour
                 yield return new WaitForSeconds(6f);
                 Exit();
             }
+            if (isPanicFirst && audioSource.volume > 0.6f)
+            {
+                
+                EventBus.onPanicHight?.Invoke();
+            }
             img.color = new Color(0, 0, 0, 0 + audioSource.volume * darkCoef);
             StartCoroutine(UpLevelVolume());
         }
@@ -53,6 +64,11 @@ public class Panic : MonoBehaviour
         audioSource.volume -= 0.08f;
         if (PlayerInputHandler.Instance.sitTrigger)
         {
+            if (isPanicFirst && audioSource.volume < 0.1f)
+            {
+                isPanicFirst = false;
+                EventBus.onPanicLow?.Invoke();
+            }
             img.color = new Color(0, 0, 0, 0 + audioSource.volume * darkCoef);
             StartCoroutine(DownLevelVolume());
         }
