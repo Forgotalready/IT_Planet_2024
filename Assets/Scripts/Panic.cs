@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,7 +47,7 @@ public class Panic : MonoBehaviour
 
     }
 
-    IEnumerator DownLevelVolume()
+    /*IEnumerator DownLevelVolume()
     {
         yield return new WaitForSecondsRealtime(1f);
         audioSource.volume -= 0.08f;
@@ -77,9 +77,9 @@ public class Panic : MonoBehaviour
 
 #elif UNITY_STANDALONE
 
-            Application.Quit(); //выход из игры
+            Application.Quit(); //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
 
 #endif
 
     }
-}
+}*/
