@@ -52,6 +52,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(_previousInteractableObject);
+
+
         _horizontalInput = _playerInputHandler.moveInput.x;
 
         if (_horizontalInput != 0)
@@ -227,7 +230,6 @@ public class PlayerController : MonoBehaviour
                     _interactableObject.GetComponent<IInteractable>().OutlineEnable();
                     GameState.Instance.choseObject = _interactableObject;
                     _previousInteractableObject = _interactableObject;
-                    Debug.Log(GameState.Instance.choseObject.name + " Тест");
                 }
             }
         }
@@ -235,6 +237,7 @@ public class PlayerController : MonoBehaviour
         {
             if(_previousInteractableObject != null)
             {
+                Debug.Log(_previousInteractableObject);
                 _previousInteractableObject.GetComponent<IInteractable>().OutlineDisable();
                 _previousInteractableObject = null;
             }
