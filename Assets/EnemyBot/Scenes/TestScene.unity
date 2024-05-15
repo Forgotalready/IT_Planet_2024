@@ -873,6 +873,7 @@ MonoBehaviour:
   _rotateRight: RotationRight
   _rotateLeft: RotationLeft
   _sit: Sit
+  _leaveInteraction: LeaveInteraction
 --- !u!1 &1183058222
 GameObject:
   m_ObjectHideFlags: 0
@@ -1151,12 +1152,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 885519768, guid: ab37d53530e04de459074f82e62427a8, type: 3}
+  m_Sprite: {fileID: -2114906164, guid: b76e483c33576cd45b2b2fb42da5c5fb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.2, y: 0.52}
+  m_Size: {x: 0.21, y: 0.52}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
