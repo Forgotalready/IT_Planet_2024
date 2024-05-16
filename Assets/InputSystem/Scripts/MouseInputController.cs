@@ -14,10 +14,14 @@ public class MouseInputController : MonoBehaviour
     {
         InputManager.inputActions.InteractionObject.Interact.started += Interact;
     }
-
-
     private void OnDisable()
     {
+        if (_previousInteractableObject != null)
+        {
+            _previousInteractableObject.gameObject.GetComponent<IInteractable>().OutlineDisable();
+            _previousInteractableObject = null;
+        }
+        _interactableObject = null;
         InputManager.inputActions.InteractionObject.Interact.started -= Interact;
     }
     private void Interact(UnityEngine.InputSystem.InputAction.CallbackContext obj)

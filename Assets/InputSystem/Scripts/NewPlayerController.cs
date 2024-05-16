@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +12,7 @@ public class NewPlayerController : MonoBehaviour
 
     [SerializeField] GameObject _playerVisual;
     private Animator _animator;
+    private SpriteRenderer _spriteRenderer;
 
     [Header("Movement Settings")]
     [SerializeField] private float _speed;
@@ -26,6 +28,9 @@ public class NewPlayerController : MonoBehaviour
     private bool _isRotateRight = false;
     private bool _isRotateLeft = false;
 
+    [Header("Show/Hide Visual Settings")]
+    [SerializeField] private float animationDuration = 1f;
+
 
     private GameObject _interactableObject;
     private GameObject _previousInteractableObject;
@@ -33,6 +38,8 @@ public class NewPlayerController : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         _animator = _playerVisual.GetComponent<Animator>();
+        _spriteRenderer = _playerVisual.GetComponent<SpriteRenderer>();
+        gameObject.GetComponent<MouseInputController>().enabled = false;
     }
 
     private void OnEnable()
@@ -60,6 +67,8 @@ public class NewPlayerController : MonoBehaviour
         if (_interactableObject != null)
         {
             _interactableObject.GetComponent<IInteractable>().Interact();
+            StartCoroutine(HidePlayerVisual());
+            gameObject.GetComponent<MouseInputController>().enabled = true;
             InputManager.ToggleActionMap(InputManager.inputActions.InteractionObject);
         }
     }
@@ -68,6 +77,8 @@ public class NewPlayerController : MonoBehaviour
         if (_interactableObject != null)
         {
             _interactableObject.GetComponent<IInteractable>().Interact();
+            StartCoroutine(ShowPlayerVisual());
+            gameObject.GetComponent<MouseInputController>().enabled = false;
             InputManager.ToggleActionMap(InputManager.inputActions.Gameplay);
         }
     }
@@ -197,5 +208,36 @@ public class NewPlayerController : MonoBehaviour
 
 
         Debug.DrawRay(ray.origin, ray.direction, Color.red);
+    }
+
+    private IEnumerator HidePlayerVisual()
+    {
+
+        Color startColor = _spriteRenderer.material.color;
+        Color finalColor = new Vector4(startColor.r, startColor.g, startColor.b, 0f);
+        float t = 0f;
+        while (t < 1)
+        {
+            _spriteRenderer.material.color = Vector4.Lerp(startColor, finalColor, t);
+            t += Time.deltaTime/ animationDuration;
+            yield return null;
+        }
+        yield break;
+    }
+
+    private IEnumerator ShowPlayerVisual()
+    {
+
+        Color startColor = _spriteRenderer.material.color;
+        Color finalColor = new Vector4(startColor.r, startColor.g, startColor.b, 1f);
+        float t = 0f;
+        while (t < 1)
+        {
+            _spriteRenderer.material.color = Vector4.Lerp(startColor, finalColor, t);
+            t += Time.deltaTime / animationDuration;
+            yield return null;
+        }
+
+        yield break;
     }
 }
