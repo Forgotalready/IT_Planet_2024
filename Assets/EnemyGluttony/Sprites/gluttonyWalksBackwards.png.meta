@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 92d80f84143e6c44dbfed337bb6c7c05
+guid: a830b96e466bf3e42bb890dc91135e53
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: anx_0
+      name: gluttonyWalksBackwards_0
       rect:
         serializedVersion: 2
-        x: 20
-        y: 6
-        width: 34
-        height: 55
+        x: 17
+        y: 2
+        width: 37
+        height: 59
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,20 +111,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f25ec2fe8be56a646b6a6c766c10426b
-      internalID: 1077177811
+      spriteID: 5ee3ae46657d3164db9f27d34c1b3181
+      internalID: 2003967866
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anx_1
+      name: gluttonyWalksBackwards_1
       rect:
         serializedVersion: 2
-        x: 84
-        y: 6
-        width: 34
-        height: 55
+        x: 81
+        y: 3
+        width: 37
+        height: 59
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +132,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1362472405003a246a8783ba09a3bdb4
-      internalID: -787260109
+      spriteID: cd575a5f5b0b3584a8bef0baabe08618
+      internalID: 624775097
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anx_2
+      name: gluttonyWalksBackwards_2
       rect:
         serializedVersion: 2
-        x: 148
-        y: 6
-        width: 34
-        height: 55
+        x: 146
+        y: 2
+        width: 37
+        height: 59
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1ee4cb8ad1bd8b74089bced0f1549578
-      internalID: -823040529
+      spriteID: cc9936d6a81037a48825c81d1d1992b0
+      internalID: 790322063
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anx_3
+      name: gluttonyWalksBackwards_3
       rect:
         serializedVersion: 2
-        x: 212
-        y: 6
-        width: 34
-        height: 55
+        x: 209
+        y: 3
+        width: 37
+        height: 59
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,8 +174,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6b6f226551c396147b7ce2773de05ca7
-      internalID: 200002795
+      spriteID: 83ca8e0724231794bb0552cc913bc6fe
+      internalID: 1507941324
       vertices: []
       indices: 
       edges: []
@@ -183,7 +183,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 8bd2fc8e615789847acb00afaab951e3
+    spriteID: ecf05d29bdac1fa488f90693b12a3811
     internalID: 0
     vertices: []
     indices: 
@@ -191,10 +191,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      anx_0: 1077177811
-      anx_1: -787260109
-      anx_2: -823040529
-      anx_3: 200002795
+      gluttonyWalksBackwards_0: 2003967866
+      gluttonyWalksBackwards_1: 624775097
+      gluttonyWalksBackwards_2: 790322063
+      gluttonyWalksBackwards_3: 1507941324
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

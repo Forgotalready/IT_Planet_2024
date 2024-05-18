@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 92d80f84143e6c44dbfed337bb6c7c05
+guid: a6e7d1ce4e94c4448b3a53ba475fd036
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: anx_0
+      name: gluttonySideIdle_0
       rect:
         serializedVersion: 2
-        x: 20
-        y: 6
-        width: 34
-        height: 55
+        x: 17
+        y: 2
+        width: 31
+        height: 59
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,20 +111,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f25ec2fe8be56a646b6a6c766c10426b
-      internalID: 1077177811
+      spriteID: 7f2df70b43170994fad407822ed293ba
+      internalID: -397507954
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anx_1
+      name: gluttonySideIdle_1
       rect:
         serializedVersion: 2
-        x: 84
-        y: 6
-        width: 34
-        height: 55
+        x: 81
+        y: 1
+        width: 31
+        height: 61
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +132,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1362472405003a246a8783ba09a3bdb4
-      internalID: -787260109
+      spriteID: 56e45a6058ad3a742a27dec2fd8f2f7c
+      internalID: 474154785
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anx_2
+      name: gluttonySideIdle_2
       rect:
         serializedVersion: 2
-        x: 148
-        y: 6
-        width: 34
-        height: 55
+        x: 145
+        y: 0
+        width: 31
+        height: 63
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1ee4cb8ad1bd8b74089bced0f1549578
-      internalID: -823040529
+      spriteID: f21501a830010ad4f93b2d9a2c8d8368
+      internalID: -26728783
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: anx_3
+      name: gluttonySideIdle_3
       rect:
         serializedVersion: 2
-        x: 212
-        y: 6
-        width: 34
-        height: 55
+        x: 209
+        y: 1
+        width: 31
+        height: 61
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,8 +174,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6b6f226551c396147b7ce2773de05ca7
-      internalID: 200002795
+      spriteID: 5c70657dfdafc6541bb1e8f8a9ceab74
+      internalID: 1304645649
       vertices: []
       indices: 
       edges: []
@@ -183,7 +183,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 8bd2fc8e615789847acb00afaab951e3
+    spriteID: cf260d29775f66c479e10ad35498961b
     internalID: 0
     vertices: []
     indices: 
@@ -191,10 +191,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      anx_0: 1077177811
-      anx_1: -787260109
-      anx_2: -823040529
-      anx_3: 200002795
+      gluttonySideIdle_0: -397507954
+      gluttonySideIdle_1: 474154785
+      gluttonySideIdle_2: -26728783
+      gluttonySideIdle_3: 1304645649
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

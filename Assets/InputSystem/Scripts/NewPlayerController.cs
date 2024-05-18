@@ -25,8 +25,6 @@ public class NewPlayerController : MonoBehaviour
     [SerializeField] private float _rotationSpeed = 10f;
     private float _rotationAngle = 90f;
     private float _rotationAlongY;
-    private bool _isRotateRight = false;
-    private bool _isRotateLeft = false;
 
     [Header("Show/Hide Visual Settings")]
     [SerializeField] private float animationDuration = 1f;
@@ -85,20 +83,21 @@ public class NewPlayerController : MonoBehaviour
 
     private void DoRotationLeft(InputAction.CallbackContext context)
     {
-        _rotationAlongY += _rotationAngle;
-        if (_rotationAlongY == 450f)
-            _rotationAlongY = 90;
-        _isRotateLeft = true;
-        _isRotateRight = false;
+        _rotationAlongY -= _rotationAngle;
+        if (_rotationAlongY < 0)
+            _rotationAlongY = 360 - _rotationAngle;
+        if (_rotationAlongY == 360)
+            _rotationAlongY = 0;
+
     }
 
     private void DoRotationRigth(InputAction.CallbackContext context)
     {
-        _rotationAlongY -= _rotationAngle;
-        if (_rotationAlongY == -450f)
-            _rotationAlongY = -90;
-        _isRotateRight = true;
-        _isRotateLeft = false;
+        _rotationAlongY += _rotationAngle;
+        if (_rotationAlongY > 360)
+            _rotationAlongY = _rotationAngle;
+        if (_rotationAlongY == 360)
+            _rotationAlongY = 0;
     }
 
     private void FixedUpdate()
@@ -110,15 +109,18 @@ public class NewPlayerController : MonoBehaviour
     private void Update()
     {
         FlipSprite(_moveAction.ReadValue<Vector2>().x);
-        if (_isRotateLeft)
+        if(Math.Abs(_playerVisual.transform.rotation.eulerAngles.y - _rotationAlongY) > 0.1f)
         {
             _playerVisual.transform.rotation = Quaternion.Lerp(_playerVisual.transform.rotation, Quaternion.Euler(0, _rotationAlongY, 0), _rotationSpeed * Time.deltaTime);
         }
-        if (_isRotateRight)
+        else
         {
-            _playerVisual.transform.rotation = Quaternion.Lerp(_playerVisual.transform.rotation, Quaternion.Euler(0, _rotationAlongY, 0), _rotationSpeed * Time.deltaTime);
+            _playerVisual.transform.rotation = Quaternion.Euler(0, _rotationAlongY, 0);
         }
+        
         InteractionRay();
+
+        //Debug.Log(_playerVisual.transform.rotation.eulerAngles.y);
     }
 
     private void ApplyMovement()
@@ -137,15 +139,15 @@ public class NewPlayerController : MonoBehaviour
 
         float horizontalInput = _moveAction.ReadValue<Vector2>().x;
 
-        if (_rotationAlongY == 0f || _rotationAlongY == 360f || _rotationAlongY == -360f)
+        if (_rotationAlongY == 0f)
         {
             forceDiraction += horizontalInput * transform.right * speed;
         }
-        else if (_rotationAlongY == 180f || _rotationAlongY == -180f)
+        else if (_rotationAlongY == 180f)
         {
             forceDiraction -= horizontalInput * transform.right * speed;
         }
-        else if (_rotationAlongY == -90f || _rotationAlongY == 270f)
+        else if (_rotationAlongY == 270f)
         {
             forceDiraction += horizontalInput * transform.forward * speed;
         }
@@ -170,10 +172,12 @@ public class NewPlayerController : MonoBehaviour
         if (input > 0)
         {
             _playerVisual.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            //_playerVisual.GetComponent<SpriteRenderer>().flipX = false;
         }
         else if (input < 0)
         {
             _playerVisual.transform.localScale = new Vector3(-0.7f, 0.7f, 0.7f);
+            //_playerVisual.GetComponent<SpriteRenderer>().flipX = true;
         }
     }
 
