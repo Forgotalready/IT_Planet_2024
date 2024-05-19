@@ -10,12 +10,13 @@ public class FlipSprite : MonoBehaviour
     [SerializeField] private float _lerpCoeff;
     private Animator _animator;
 
+    [SerializeField] private Camera _camera;
 
     private Transform enemyObject;
     private List<Vector3> enemyDirections;
 
-    private float _rotationAlongY = 0f;
-    private float _rotationAngle = 90f;
+    //private float _rotationAlongY = 0f;
+    //private float _rotationAngle = 90f;
 
     private void Start()
     {
@@ -23,38 +24,38 @@ public class FlipSprite : MonoBehaviour
         enemyObject = transform.parent;
     }
 
-    private void OnEnable()
-    {
-        InputManager.inputActions.Gameplay.RotationRight.started += DoRotationRigth;
-        InputManager.inputActions.Gameplay.RotationLeft.started += DoRotationLeft;
-    }
+    //private void OnEnable()
+    //{
+    //    InputManager.inputActions.Gameplay.RotationRight.started += DoRotationRigth;
+    //    InputManager.inputActions.Gameplay.RotationLeft.started += DoRotationLeft;
+    //}
 
-    private void OnDisable()
-    {
-        InputManager.inputActions.Gameplay.RotationRight.started -= DoRotationRigth;
-        InputManager.inputActions.Gameplay.RotationLeft.started -= DoRotationLeft;
-    }
+    //private void OnDisable()
+    //{
+    //    InputManager.inputActions.Gameplay.RotationRight.started -= DoRotationRigth;
+    //    InputManager.inputActions.Gameplay.RotationLeft.started -= DoRotationLeft;
+    //}
 
     void Update()
     {
         transform.rotation = _targetTransformVisual.rotation;
-        Vector3 viewVector;
+        //Vector3 viewVector;
 
-        switch (_rotationAlongY)
-        {
-            case 0f:
-                viewVector = Vector3.forward;
-                break;
-            case 90f:
-                viewVector = Vector3.right;
-                break;
-            case 180:
-                viewVector = Vector3.back;
-                break;
-            default:
-                viewVector = Vector3.left;
-                break;
-        }
+        //switch (_rotationAlongY)
+        //{
+        //    case 0f:
+        //        viewVector = Vector3.forward;
+        //        break;
+        //    case 90f:
+        //        viewVector = Vector3.right;
+        //        break;
+        //    case 180:
+        //        viewVector = Vector3.back;
+        //        break;
+        //    default:
+        //        viewVector = Vector3.left;
+        //        break;
+        //}
 
         enemyDirections = new List<Vector3>
         {
@@ -69,7 +70,7 @@ public class FlipSprite : MonoBehaviour
 
         for (int i = 0; i < enemyDirections.Count; i++)
         {
-            float dot = Vector3.Dot(enemyDirections[i], viewVector);
+            float dot = Vector3.Dot(enemyDirections[i], _camera.transform.forward);
             if (dot > maxPositiveDot)
             {
                 maxPositiveDot = dot;
@@ -110,22 +111,22 @@ public class FlipSprite : MonoBehaviour
         enemyDirections.Clear();
     }
 
-    private void DoRotationLeft(InputAction.CallbackContext context)
-    {
-        _rotationAlongY -= _rotationAngle;
-        if (_rotationAlongY < 0)
-            _rotationAlongY = 360 - _rotationAngle;
-        if (_rotationAlongY == 360)
-            _rotationAlongY = 0;
-    }
+    //private void DoRotationLeft(InputAction.CallbackContext context)
+    //{
+    //    _rotationAlongY -= _rotationAngle;
+    //    if (_rotationAlongY < 0)
+    //        _rotationAlongY = 360 - _rotationAngle;
+    //    if (_rotationAlongY == 360)
+    //        _rotationAlongY = 0;
+    //}
 
-    private void DoRotationRigth(InputAction.CallbackContext context)
-    {
-        _rotationAlongY += _rotationAngle;
-        if (_rotationAlongY > 360)
-            _rotationAlongY = _rotationAngle;
-        if (_rotationAlongY == 360)
-            _rotationAlongY = 0;
-    }
+    //private void DoRotationRigth(InputAction.CallbackContext context)
+    //{
+    //    _rotationAlongY += _rotationAngle;
+    //    if (_rotationAlongY > 360)
+    //        _rotationAlongY = _rotationAngle;
+    //    if (_rotationAlongY == 360)
+    //        _rotationAlongY = 0;
+    //}
 
 }

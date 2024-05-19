@@ -103,13 +103,13 @@ public class NewPlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         ApplyMovement();
-        _animator.SetFloat("xVelocity", _rigidbody.velocity.magnitude/(_speed * _sprintCoef));
+        _animator.SetFloat("xVelocity", _rigidbody.velocity.magnitude / (_speed * _sprintCoef));
     }
 
     private void Update()
     {
         FlipSprite(_moveAction.ReadValue<Vector2>().x);
-        if(Math.Abs(_playerVisual.transform.rotation.eulerAngles.y - _rotationAlongY) > 0.1f)
+        if (Math.Abs(_playerVisual.transform.rotation.eulerAngles.y - _rotationAlongY) > 0.1f)
         {
             _playerVisual.transform.rotation = Quaternion.Lerp(_playerVisual.transform.rotation, Quaternion.Euler(0, _rotationAlongY, 0), _rotationSpeed * Time.deltaTime);
         }
@@ -117,7 +117,7 @@ public class NewPlayerController : MonoBehaviour
         {
             _playerVisual.transform.rotation = Quaternion.Euler(0, _rotationAlongY, 0);
         }
-        
+
         InteractionRay();
 
         //Debug.Log(_playerVisual.transform.rotation.eulerAngles.y);
@@ -127,7 +127,7 @@ public class NewPlayerController : MonoBehaviour
     {
         float speed = _speed * (_sprintAction.IsPressed() ? _sprintCoef : 1f);
 
-        if(_hidingAction.IsPressed())
+        if (_hidingAction.IsPressed())
         {
             _animator.SetBool("isHiding", true);
             return;
@@ -186,17 +186,13 @@ public class NewPlayerController : MonoBehaviour
         Ray ray = new Ray(_playerVisual.transform.position, _playerVisual.transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, _interactionDistance))
+        if (Physics.Raycast(ray, out hit, _interactionDistance) && hit.transform.tag == "CameraChangingObject")
         {
-            string tag = hit.collider.gameObject.tag;
-            if (tag == "CameraChangingObject")
+            _interactableObject = hit.collider.gameObject;
+            if (_interactableObject != null && _interactableObject != _previousInteractableObject)
             {
-                _interactableObject = hit.collider.gameObject;
-                if (_interactableObject != null && _interactableObject != _previousInteractableObject)
-                {
-                    _interactableObject.GetComponent<IInteractable>().OutlineEnable();
-                    _previousInteractableObject = _interactableObject;
-                }
+                _interactableObject.GetComponent<IInteractable>().OutlineEnable();
+                _previousInteractableObject = _interactableObject;
             }
         }
         else
@@ -208,8 +204,6 @@ public class NewPlayerController : MonoBehaviour
             }
             _interactableObject = null;
         }
-
-
 
         Debug.DrawRay(ray.origin, ray.direction, Color.red);
     }
@@ -223,7 +217,7 @@ public class NewPlayerController : MonoBehaviour
         while (t < 1)
         {
             _spriteRenderer.material.color = Vector4.Lerp(startColor, finalColor, t);
-            t += Time.deltaTime/ animationDuration;
+            t += Time.deltaTime / animationDuration;
             yield return null;
         }
         yield break;

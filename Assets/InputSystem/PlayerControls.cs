@@ -194,6 +194,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Hide"",
+                    ""type"": ""Button"",
+                    ""id"": ""b0cc1bdb-ed91-4007-9e9d-021850a7141f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -216,6 +225,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard and mouse"",
                     ""action"": ""LeaveInteraction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cee683bc-774a-4c33-a935-8d29730522a2"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Hide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -253,6 +273,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_InteractionObject = asset.FindActionMap("InteractionObject", throwIfNotFound: true);
         m_InteractionObject_Interact = m_InteractionObject.FindAction("Interact", throwIfNotFound: true);
         m_InteractionObject_LeaveInteraction = m_InteractionObject.FindAction("LeaveInteraction", throwIfNotFound: true);
+        m_InteractionObject_Hide = m_InteractionObject.FindAction("Hide", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -402,12 +423,14 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private List<IInteractionObjectActions> m_InteractionObjectActionsCallbackInterfaces = new List<IInteractionObjectActions>();
     private readonly InputAction m_InteractionObject_Interact;
     private readonly InputAction m_InteractionObject_LeaveInteraction;
+    private readonly InputAction m_InteractionObject_Hide;
     public struct InteractionObjectActions
     {
         private @PlayerControls m_Wrapper;
         public InteractionObjectActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Interact => m_Wrapper.m_InteractionObject_Interact;
         public InputAction @LeaveInteraction => m_Wrapper.m_InteractionObject_LeaveInteraction;
+        public InputAction @Hide => m_Wrapper.m_InteractionObject_Hide;
         public InputActionMap Get() { return m_Wrapper.m_InteractionObject; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -423,6 +446,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @LeaveInteraction.started += instance.OnLeaveInteraction;
             @LeaveInteraction.performed += instance.OnLeaveInteraction;
             @LeaveInteraction.canceled += instance.OnLeaveInteraction;
+            @Hide.started += instance.OnHide;
+            @Hide.performed += instance.OnHide;
+            @Hide.canceled += instance.OnHide;
         }
 
         private void UnregisterCallbacks(IInteractionObjectActions instance)
@@ -433,6 +459,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @LeaveInteraction.started -= instance.OnLeaveInteraction;
             @LeaveInteraction.performed -= instance.OnLeaveInteraction;
             @LeaveInteraction.canceled -= instance.OnLeaveInteraction;
+            @Hide.started -= instance.OnHide;
+            @Hide.performed -= instance.OnHide;
+            @Hide.canceled -= instance.OnHide;
         }
 
         public void RemoveCallbacks(IInteractionObjectActions instance)
@@ -472,5 +501,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     {
         void OnInteract(InputAction.CallbackContext context);
         void OnLeaveInteraction(InputAction.CallbackContext context);
+        void OnHide(InputAction.CallbackContext context);
     }
 }
