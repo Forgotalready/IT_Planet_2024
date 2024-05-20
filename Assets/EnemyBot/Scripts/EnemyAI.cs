@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+
+
 
 /// <summary>
 /// Класс описывающий логику движения NPC
@@ -131,10 +134,17 @@ public class EnemyAI : MonoBehaviour
 
     private GameObject isFoodNear(float howNear)
     {
-        foreach (GameObject go in _foodObjects) 
-            if (Vector3.Distance(go.transform.position, transform.position) < howNear) 
-                return go;
-        return null;       
+        GameObject result = null;
+        foreach (GameObject go in _foodObjects)
+            if (Vector3.Distance(go.transform.position, transform.position) < howNear)
+            {
+                if (result == null)
+                    result = go;
+                else
+                    if (Vector3.Distance(go.transform.position, transform.position) < Vector3.Distance(result.transform.position, transform.position))
+                        result = go;
+            }
+        return result;       
     }
 
     /// <summary>

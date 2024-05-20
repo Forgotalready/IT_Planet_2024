@@ -1347,7 +1347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed446f2b5af21e444ae8e65ab5b6e194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  food: {fileID: 1942942577730357420, guid: b2e44e9a6cde81d4a96a17df4d9f26dd, type: 3}
+  food: {fileID: 2059490246284234930, guid: 72a42af7feb65b94ca03b614d642517e, type: 3}
   cameraObj: {fileID: 1989474757}
 --- !u!1 &1612838411
 GameObject:
