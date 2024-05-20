@@ -1,65 +1,65 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using UnityEngine.UI;
-using UnityEngine;
+// using System.Collections;
+// using System.Collections.Generic;
+// using System.Diagnostics;
+// using UnityEngine.UI;
+// using UnityEngine;
 
 
 
-public class GameManager : MonoBehaviour
-{
-    [SerializeField] GameObject manualPanel;
-    [SerializeField] GameObject panicHighPanel;
+// public class GameManager : MonoBehaviour
+// {
+//     [SerializeField] GameObject manualPanel;
+//     [SerializeField] GameObject panicHighPanel;
 
-    [SerializeField] Button manualeClose;
-    [SerializeField] Button manualeÑlue;
+//     [SerializeField] Button manualeClose;
+//     [SerializeField] Button manualeï¿½lue;
 
 
-    private void Start()
-    {
-        manualeClose.onClick.AddListener(MainManualHide);
-        manualeÑlue.onClick.AddListener(MainManualShow);
-        Invoke("MainManualShow", 2f);  
-    }
+//     private void Start()
+//     {
+//         manualeClose.onClick.AddListener(MainManualHide);
+//         manualeï¿½lue.onClick.AddListener(MainManualShow);
+//         Invoke("MainManualShow", 2f);  
+//     }
 
-    private void OnEnable()
-    {
-        EventBus.onPanicHight += PanicManualShow;
-        EventBus.onPanicLow += PanicManualHide;
-        EventBus.onManuallOff += MainManualHide;
-        EventBus.onManuallOn += MainManualShow;
-    }
+//     private void OnEnable()
+//     {
+//         EventBus.onPanicHight += PanicManualShow;
+//         EventBus.onPanicLow += PanicManualHide;
+//         EventBus.onManuallOff += MainManualHide;
+//         EventBus.onManuallOn += MainManualShow;
+//     }
 
-    private void OnDisable()
-    {
-        EventBus.onPanicHight -= PanicManualShow;
-        EventBus.onPanicLow -= PanicManualHide;
-        EventBus.onManuallOff -= MainManualHide;
-        EventBus.onManuallOn -= MainManualShow;
-    }
+//     private void OnDisable()
+//     {
+//         EventBus.onPanicHight -= PanicManualShow;
+//         EventBus.onPanicLow -= PanicManualHide;
+//         EventBus.onManuallOff -= MainManualHide;
+//         EventBus.onManuallOn -= MainManualShow;
+//     }
 
-    private void PanicManualShow()
-    {
+//     private void PanicManualShow()
+//     {
        
-        panicHighPanel.SetActive(true);
-    }
+//         panicHighPanel.SetActive(true);
+//     }
 
-    private void PanicManualHide()
-    {
+//     private void PanicManualHide()
+//     {
         
-        panicHighPanel.SetActive(false);
-    }
+//         panicHighPanel.SetActive(false);
+//     }
 
-    private void MainManualShow()
-    {
+//     private void MainManualShow()
+//     {
 
-        manualPanel.SetActive(true);
-    }
+//         manualPanel.SetActive(true);
+//     }
 
-    private void MainManualHide()
-    {
-        UnityEngine.Debug.Log("I work. Seriously");
-        manualPanel.SetActive(false);
-    }
+//     private void MainManualHide()
+//     {
+//         UnityEngine.Debug.Log("I work. Seriously");
+//         manualPanel.SetActive(false);
+//     }
 
-}
+// }
