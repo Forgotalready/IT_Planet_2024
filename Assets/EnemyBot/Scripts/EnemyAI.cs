@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,6 +9,22 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
+
+    /// <summary>
+    /// Путь движения ИИ
+    /// </summary>
+    [SerializeField] private List<GameObject> track;
+
+    /// <summary>
+    /// Предметы, в которых можно прятаться
+    /// </summary>
+    private GameObject[] _hideObjects;
+
+    /// <summary>
+    /// Предметы еды
+    /// </summary>
+    private GameObject[] _foodObjects;
+
     /// <summary>
     /// Начальное состояние.
     /// </summary>
@@ -18,30 +35,11 @@ public class EnemyAI : MonoBehaviour
     /// </summary>
     [SerializeField] private GameObject Player;
 
-    /// <summary>
-    /// Максимальная удалённость точки, нового положения.
-    /// </summary>
-    [SerializeField] private float roamingDistanceMax = 7f;
-
-    /// <summary>
-    /// Минимальная удалённость точки, нового положения.
-    /// </summary>
-    [SerializeField] private float roamingDistanceMin = 3f;
-
-    /// <summary>
-    /// Максимальное время перемещения.
-    /// </summary>
-    [SerializeField] private float roamingTimerMax = 2f;
-
-    /// <summary>
-    /// Максимальное время простоя.
-    /// </summary>
-    [SerializeField] private float idleTimeMax = 2f;
 
     /// <summary>
     /// Расстояние, при котором NPC начинают догонят игрока.
     /// </summary>
-    [SerializeField] private float howNear = 50f;
+    [SerializeField] private float howNear = 10f;
 
 
     private NavMeshAgent _navMeshAgent;
@@ -54,14 +52,18 @@ public class EnemyAI : MonoBehaviour
     private Vector3 _roamPosition;
     private Vector3 _startPosition;
 
+    private bool _isPlayerHide = false;
+
+    private int _posNumber = 0;
+
 
     /// <summary>
     /// Возможные состояния NPC.
     /// </summary>
     private enum State { 
-        Idle,
         Roaming,
-        PlayerNear
+        PlayerNear,
+        FoodDetect
     }
 
     private void Start() { 
@@ -71,62 +73,83 @@ public class EnemyAI : MonoBehaviour
     private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
+        _hideObjects = GameObject.FindGameObjectsWithTag("CameraChangingObject");
+
+        foreach (GameObject go in _hideObjects)
+        {
+            HideObject ho = go.GetComponent<HideObject>();
+            if(ho != null)
+                ho.playerHide += Hide;
+        }
+        _navMeshAgent.SetDestination(track[_posNumber].transform.position);
         _state = startingState;
+    }
+
+    private void Hide()
+    {
+        if (_state == State.PlayerNear) {
+            #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+            #elif UNITY_STANDALONE
+                Application.Quit(); 
+            #endif
+        }
+        _isPlayerHide = true;
     }
 
     private void Update()
     {
-        System.Random rand = new System.Random();
+        _foodObjects = GameObject.FindGameObjectsWithTag("Food");
 
-        if (isPlayerNear(howNear)) { 
+        GameObject nearFood = isFoodNear(howNear);
+
+        if (!(nearFood == null))
+            _state = State.FoodDetect;
+
+        else if (isPlayerNear(howNear) && !_isPlayerHide)
             _state = State.PlayerNear;
-        }
+        
         switch (_state)
         {
             default:
-            case State.Idle:
-                _idleTime -= Time.deltaTime;
-                if (_idleTime < 0)
-                {
-                    _idleTime = idleTimeMax;
-                    if (rand.Next(0, 2) == 1)
-                        _state = State.Roaming;
-                }
-                break;
             case State.Roaming:
-                _roamingTime -= Time.deltaTime;
-                if (_roamingTime < 0) {
-                    Roaming();
-                    _roamingTime = roamingTimerMax;
-                    if (rand.Next(0, 2) == 1)
-                        _state = State.Idle;
-                }
+                roamingStateMovement();
                 break;
             case State.PlayerNear:
                 chasingPlayer();
                 break;
+            case State.FoodDetect:
+                foodDetectBehv(nearFood);
+                break;
         }
     }
 
+    private void foodDetectBehv(GameObject nearFood)
+    {
+         _navMeshAgent.SetDestination(nearFood.transform.position);
+    }
+
+    private GameObject isFoodNear(float howNear)
+    {
+        foreach (GameObject go in _foodObjects) 
+            if (Vector3.Distance(go.transform.position, transform.position) < howNear) 
+                return go;
+        return null;       
+    }
+
+    /// <summary>
+    /// Логика действий в состояние roaming
+    /// </summary>
+    private void roamingStateMovement()
+    {
+        if (Vector3.Distance(track[_posNumber].transform.position, transform.position) < 1.5f){
+            _posNumber = (_posNumber + 1) % track.Count;
+            _navMeshAgent.SetDestination(track[_posNumber].transform.position);
+        }
+    }
     private void chasingPlayer()
     {
         _navMeshAgent.SetDestination(Player.transform.position);
-    }
-
-    private void Roaming()
-    {
-        _roamPosition = GetRoamingPosition();
-        _navMeshAgent.SetDestination(_roamPosition);
-    }
-
-    private Vector3 GetRoamingPosition()
-    {
-        return _startPosition + GetRandomDir() * UnityEngine.Random.Range(roamingDistanceMin, roamingDistanceMax);
-    }
-
-    private Vector3 GetRandomDir()
-    {
-        return new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f)).normalized;
     }
 
     private bool isPlayerNear(float howNear) {
