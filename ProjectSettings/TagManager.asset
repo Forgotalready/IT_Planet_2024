@@ -10,6 +10,7 @@ TagManager:
   - Inventory
   - CameraChangingObject
   - Food
+  - Enemy
   layers:
   - Default
   - TransparentFX
