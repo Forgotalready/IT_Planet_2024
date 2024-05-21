@@ -1,10 +1,34 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Класс управляющий анимацией бота.
+/// </summary>
+public class EnemyAnimation {
+    private Animator _animator;
 
+    private EnemyAI _enemyAI;
+    public EnemyAnimation(EnemyAI ai) { 
+        _enemyAI = ai;
+    }
+    public void setupAnimation() {
+        Transform thisTransform = _enemyAI.GetComponent<Transform>();
+
+        foreach (Transform child in thisTransform)
+        {
+            GameObject childObject = child.gameObject;
+            Animator childAnimator = childObject.GetComponent<Animator>();
+            if (childAnimator != null)
+            {
+                _animator = childAnimator;
+                break;
+            }
+        }
+    }
+    public void setAnimationSpeed(float enemySpeed, float maxSpeed)  => _animator.SetFloat("Velocity", enemySpeed / maxSpeed);
+    
+}
 
 /// <summary>
 /// Класс описывающий логику движения NPC
@@ -54,16 +78,18 @@ public class EnemyAI : MonoBehaviour
     /// </summary>
     [SerializeField] private float chasingSpeed = 2.0f;
 
+    /// <summary>
+    /// Максимальное время съедания еды.
+    /// </summary>
+    [SerializeField] private float maxEatingTime = 5.0f;
+
     private NavMeshAgent _navMeshAgent;
+
+    private float eatingTime;
 
     private State _state;
 
-    private float _roamingTime;
-    private float _idleTime;
-
-    private Vector3 _roamPosition;
-    private Vector3 _startPosition;
-    private Animator _animator;
+    private EnemyAnimation _enemyAnimation;
 
     private bool _isPlayerHide = false;
 
@@ -79,29 +105,17 @@ public class EnemyAI : MonoBehaviour
         FoodDetect
     }
 
-    private void Start() { 
-        _startPosition = transform.position;
-    }
-
     private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshAgent.speed = normalSpeed;
 
+        eatingTime = maxEatingTime;
+
         _hideObjects = GameObject.FindGameObjectsWithTag("CameraChangingObject");
 
-        Transform thisTransform = GetComponent<Transform>();
-
-        foreach (Transform child in thisTransform)
-        {
-            GameObject childObject = child.gameObject;
-            Animator childAnimator = childObject.GetComponent<Animator>();
-            if (childAnimator != null)
-            {
-                _animator = childAnimator;
-                break;
-            }
-        }
+        _enemyAnimation = new EnemyAnimation(this);
+        _enemyAnimation.setupAnimation();
 
         foreach (GameObject go in _hideObjects)
         {
@@ -128,9 +142,7 @@ public class EnemyAI : MonoBehaviour
     private void Update()
     {
         _foodObjects = GameObject.FindGameObjectsWithTag("Food");
-
         GameObject nearFood = isFoodNear(howNear);
-
         if (!(nearFood == null))
             _state = State.FoodDetect;
 
@@ -139,7 +151,8 @@ public class EnemyAI : MonoBehaviour
             _state = State.PlayerNear;
             _navMeshAgent.speed = chasingSpeed;
         }
-        _animator.SetFloat("Velocity", _navMeshAgent.speed / chasingSpeed);
+        _enemyAnimation.setAnimationSpeed(_navMeshAgent.speed, chasingSpeed);
+        
         switch (_state)
         {
             default:
@@ -154,10 +167,22 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
     }
-
+    /// <summary>
+    /// Поведение бота, если он нашёл рядом еду.
+    /// </summary>
+    /// <param name="nearFood">Ближайшая еда</param>
     private void foodDetectBehv(GameObject nearFood)
     {
-         _navMeshAgent.SetDestination(nearFood.transform.position);
+        _navMeshAgent.SetDestination(nearFood.transform.position);
+        if (Vector3.Distance(nearFood.transform.position, transform.position) < 1.5f) {
+            if (eatingTime < 0) {
+                _state = State.Roaming;
+                eatingTime = maxEatingTime;
+                Destroy(nearFood);
+            }else
+                eatingTime -= Time.deltaTime;
+        }
+
     }
     /// <summary>
     /// Метод, который проверяет нет ли рядом с ботом еды
@@ -184,17 +209,21 @@ public class EnemyAI : MonoBehaviour
     /// </summary>
     private void roamingStateMovement()
     {
+        _navMeshAgent.SetDestination(track[_posNumber].transform.position);
         if (Vector3.Distance(track[_posNumber].transform.position, transform.position) < 1.5f){
             _posNumber = (_posNumber + 1) % track.Count;
             _navMeshAgent.SetDestination(track[_posNumber].transform.position);
         }
     }
-    private void chasingPlayer()
-    {
-        _navMeshAgent.SetDestination(Player.transform.position);
-    }
-
-    private bool isPlayerNear(float howNear) {
-        return (Vector3.Distance(Player.transform.position, transform.position) < howNear);
-    }
+    /// <summary>
+    /// Метод, который заставляет бота догонять игрока.
+    /// </summary>
+    private void chasingPlayer() => _navMeshAgent.SetDestination(Player.transform.position);
+    
+    /// <summary>
+    /// Метод проверяющий есть ли рядом игрок.
+    /// </summary>
+    /// <param name="howNear">Степень близости</param>
+    /// <returns>Близко ли игрок</returns>
+    private bool isPlayerNear(float howNear)  => (Vector3.Distance(Player.transform.position, transform.position) < howNear);
 }

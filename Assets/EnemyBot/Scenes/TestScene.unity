@@ -833,7 +833,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 1017487762, guid: 62ba7bd80e8c78744a6a158a7f8287e1, type: 3}
-  m_Color: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1268,6 +1268,9 @@ MonoBehaviour:
   startingState: 0
   Player: {fileID: 1377767010}
   howNear: 10
+  normalSpeed: 1.2
+  chasingSpeed: 2
+  maxEatingTime: 5
 --- !u!195 &1316556369
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1390,7 +1393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interactionDistance: 20
-  _mainCamera: {fileID: 0}
+  _mainCamera: {fileID: 1989474759}
 --- !u!114 &1377767013
 MonoBehaviour:
   m_ObjectHideFlags: 0
