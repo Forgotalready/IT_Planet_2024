@@ -44,6 +44,15 @@ public class EnemyAI : MonoBehaviour
     /// </summary>
     [SerializeField] private float howNear = 10f;
 
+    /// <summary>
+    /// Нормальная скорость бота
+    /// </summary>
+    [SerializeField] private float normalSpeed = 1.2f;
+
+    /// <summary>
+    /// Скорость, когда бот гонится за игроком
+    /// </summary>
+    [SerializeField] private float chasingSpeed = 2.0f;
 
     private NavMeshAgent _navMeshAgent;
 
@@ -54,6 +63,7 @@ public class EnemyAI : MonoBehaviour
 
     private Vector3 _roamPosition;
     private Vector3 _startPosition;
+    private Animator _animator;
 
     private bool _isPlayerHide = false;
 
@@ -76,7 +86,22 @@ public class EnemyAI : MonoBehaviour
     private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent.speed = normalSpeed;
+
         _hideObjects = GameObject.FindGameObjectsWithTag("CameraChangingObject");
+
+        Transform thisTransform = GetComponent<Transform>();
+
+        foreach (Transform child in thisTransform)
+        {
+            GameObject childObject = child.gameObject;
+            Animator childAnimator = childObject.GetComponent<Animator>();
+            if (childAnimator != null)
+            {
+                _animator = childAnimator;
+                break;
+            }
+        }
 
         foreach (GameObject go in _hideObjects)
         {
@@ -110,8 +135,11 @@ public class EnemyAI : MonoBehaviour
             _state = State.FoodDetect;
 
         else if (isPlayerNear(howNear) && !_isPlayerHide)
+        {
             _state = State.PlayerNear;
-        
+            _navMeshAgent.speed = chasingSpeed;
+        }
+        _animator.SetFloat("Velocity", _navMeshAgent.speed / chasingSpeed);
         switch (_state)
         {
             default:
@@ -131,7 +159,11 @@ public class EnemyAI : MonoBehaviour
     {
          _navMeshAgent.SetDestination(nearFood.transform.position);
     }
-
+    /// <summary>
+    /// Метод, который проверяет нет ли рядом с ботом еды
+    /// </summary>
+    /// <param name="howNear">Насколько близко должна находится еда</param>
+    /// <returns>Ближающую еду или null</returns>
     private GameObject isFoodNear(float howNear)
     {
         GameObject result = null;
