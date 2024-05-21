@@ -20,33 +20,39 @@ public class DeactiveWalls : MonoBehaviour
                 if (hittedObject == null)
                 {
                     hittedObject = newObject;
-
-                    MeshRenderer meshRenderer = hittedObject.GetComponent<MeshRenderer>();
-                    if (meshRenderer != null)
-                    {
-                        meshRenderer.enabled = false;
-                    }
-
                     deactivateChilds(hittedObject);
+                    
+                    //MeshRenderer meshRenderer = hittedObject.GetComponent<MeshRenderer>();
+                    //if (meshRenderer != null)
+                    //{
+                    //    meshRenderer.enabled = false;
+                    //}
+
                 }
                 else if (hittedObject != newObject)
                 {
-                    MeshRenderer meshRenderer = hittedObject.GetComponent<MeshRenderer>();
-                    if (meshRenderer != null)
-                    {
-                        meshRenderer.enabled = true;
-                    }
+                    //MeshRenderer meshRenderer = hittedObject.GetComponent<MeshRenderer>();
+                    //if (meshRenderer != null)
+                    //{
+                    //    meshRenderer.enabled = true;
+                    //}
                     activateChilds(hittedObject);
-
-                    meshRenderer = newObject.GetComponent<MeshRenderer>();
-                    if (meshRenderer != null)
-                    {
-                        meshRenderer.enabled = false;
-                    }
+                    //meshRenderer = newObject.GetComponent<MeshRenderer>();
+                    //if (meshRenderer != null)
+                    //{
+                    //    meshRenderer.enabled = false;
+                    //}
                     deactivateChilds(newObject);
-
                     hittedObject = newObject;
                 }
+            }
+            else
+            {
+                if(hittedObject != null)
+                {
+                    activateChilds(hittedObject);
+                }
+                hittedObject = null;
             }
         }
     }

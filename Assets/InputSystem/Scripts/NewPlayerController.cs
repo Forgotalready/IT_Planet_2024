@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +12,7 @@ public class NewPlayerController : MonoBehaviour
 
     [SerializeField] GameObject _playerVisual;
     private Animator _animator;
+    private SpriteRenderer _spriteRenderer;
 
     [Header("Movement Settings")]
     [SerializeField] private float _speed;
@@ -23,8 +25,9 @@ public class NewPlayerController : MonoBehaviour
     [SerializeField] private float _rotationSpeed = 10f;
     private float _rotationAngle = 90f;
     private float _rotationAlongY;
-    private bool _isRotateRight = false;
-    private bool _isRotateLeft = false;
+
+    [Header("Show/Hide Visual Settings")]
+    [SerializeField] private float animationDuration = 1f;
 
 
     private GameObject _interactableObject;
@@ -33,6 +36,8 @@ public class NewPlayerController : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         _animator = _playerVisual.GetComponent<Animator>();
+        _spriteRenderer = _playerVisual.GetComponent<SpriteRenderer>();
+        gameObject.GetComponent<MouseInputController>().enabled = false;
     }
 
     private void OnEnable()
@@ -60,6 +65,8 @@ public class NewPlayerController : MonoBehaviour
         if (_interactableObject != null)
         {
             _interactableObject.GetComponent<IInteractable>().Interact();
+            StartCoroutine(HidePlayerVisual());
+            gameObject.GetComponent<MouseInputController>().enabled = true;
             InputManager.ToggleActionMap(InputManager.inputActions.InteractionObject);
         }
     }
@@ -68,53 +75,59 @@ public class NewPlayerController : MonoBehaviour
         if (_interactableObject != null)
         {
             _interactableObject.GetComponent<IInteractable>().Interact();
+            StartCoroutine(ShowPlayerVisual());
+            gameObject.GetComponent<MouseInputController>().enabled = false;
             InputManager.ToggleActionMap(InputManager.inputActions.Gameplay);
         }
     }
 
     private void DoRotationLeft(InputAction.CallbackContext context)
     {
-        _rotationAlongY += _rotationAngle;
-        if (_rotationAlongY == 450f)
-            _rotationAlongY = 90;
-        _isRotateLeft = true;
-        _isRotateRight = false;
+        _rotationAlongY -= _rotationAngle;
+        if (_rotationAlongY < 0)
+            _rotationAlongY = 360 - _rotationAngle;
+        if (_rotationAlongY == 360)
+            _rotationAlongY = 0;
+
     }
 
     private void DoRotationRigth(InputAction.CallbackContext context)
     {
-        _rotationAlongY -= _rotationAngle;
-        if (_rotationAlongY == -450f)
-            _rotationAlongY = -90;
-        _isRotateRight = true;
-        _isRotateLeft = false;
+        _rotationAlongY += _rotationAngle;
+        if (_rotationAlongY > 360)
+            _rotationAlongY = _rotationAngle;
+        if (_rotationAlongY == 360)
+            _rotationAlongY = 0;
     }
 
     private void FixedUpdate()
     {
         ApplyMovement();
-        _animator.SetFloat("xVelocity", _rigidbody.velocity.magnitude/(_speed * _sprintCoef));
+        _animator.SetFloat("xVelocity", _rigidbody.velocity.magnitude / (_speed * _sprintCoef));
     }
 
     private void Update()
     {
         FlipSprite(_moveAction.ReadValue<Vector2>().x);
-        if (_isRotateLeft)
+        if (Math.Abs(_playerVisual.transform.rotation.eulerAngles.y - _rotationAlongY) > 0.1f)
         {
             _playerVisual.transform.rotation = Quaternion.Lerp(_playerVisual.transform.rotation, Quaternion.Euler(0, _rotationAlongY, 0), _rotationSpeed * Time.deltaTime);
         }
-        if (_isRotateRight)
+        else
         {
-            _playerVisual.transform.rotation = Quaternion.Lerp(_playerVisual.transform.rotation, Quaternion.Euler(0, _rotationAlongY, 0), _rotationSpeed * Time.deltaTime);
+            _playerVisual.transform.rotation = Quaternion.Euler(0, _rotationAlongY, 0);
         }
+
         InteractionRay();
+
+        //Debug.Log(_playerVisual.transform.rotation.eulerAngles.y);
     }
 
     private void ApplyMovement()
     {
         float speed = _speed * (_sprintAction.IsPressed() ? _sprintCoef : 1f);
 
-        if(_hidingAction.IsPressed())
+        if (_hidingAction.IsPressed())
         {
             _animator.SetBool("isHiding", true);
             return;
@@ -126,15 +139,15 @@ public class NewPlayerController : MonoBehaviour
 
         float horizontalInput = _moveAction.ReadValue<Vector2>().x;
 
-        if (_rotationAlongY == 0f || _rotationAlongY == 360f || _rotationAlongY == -360f)
+        if (_rotationAlongY == 0f)
         {
             forceDiraction += horizontalInput * transform.right * speed;
         }
-        else if (_rotationAlongY == 180f || _rotationAlongY == -180f)
+        else if (_rotationAlongY == 180f)
         {
             forceDiraction -= horizontalInput * transform.right * speed;
         }
-        else if (_rotationAlongY == -90f || _rotationAlongY == 270f)
+        else if (_rotationAlongY == 270f)
         {
             forceDiraction += horizontalInput * transform.forward * speed;
         }
@@ -159,10 +172,12 @@ public class NewPlayerController : MonoBehaviour
         if (input > 0)
         {
             _playerVisual.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            //_playerVisual.GetComponent<SpriteRenderer>().flipX = false;
         }
         else if (input < 0)
         {
             _playerVisual.transform.localScale = new Vector3(-0.7f, 0.7f, 0.7f);
+            //_playerVisual.GetComponent<SpriteRenderer>().flipX = true;
         }
     }
 
@@ -171,17 +186,13 @@ public class NewPlayerController : MonoBehaviour
         Ray ray = new Ray(_playerVisual.transform.position, _playerVisual.transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, _interactionDistance))
+        if (Physics.Raycast(ray, out hit, _interactionDistance) && hit.transform.tag == "CameraChangingObject")
         {
-            string tag = hit.collider.gameObject.tag;
-            if (tag == "CameraChangingObject")
+            _interactableObject = hit.collider.gameObject;
+            if (_interactableObject != null && _interactableObject != _previousInteractableObject)
             {
-                _interactableObject = hit.collider.gameObject;
-                if (_interactableObject != null && _interactableObject != _previousInteractableObject)
-                {
-                    _interactableObject.GetComponent<IInteractable>().OutlineEnable();
-                    _previousInteractableObject = _interactableObject;
-                }
+                _interactableObject.GetComponent<IInteractable>().OutlineEnable();
+                _previousInteractableObject = _interactableObject;
             }
         }
         else
@@ -194,8 +205,37 @@ public class NewPlayerController : MonoBehaviour
             _interactableObject = null;
         }
 
-
-
         Debug.DrawRay(ray.origin, ray.direction, Color.red);
+    }
+
+    private IEnumerator HidePlayerVisual()
+    {
+
+        Color startColor = _spriteRenderer.material.color;
+        Color finalColor = new Vector4(startColor.r, startColor.g, startColor.b, 0f);
+        float t = 0f;
+        while (t < 1)
+        {
+            _spriteRenderer.material.color = Vector4.Lerp(startColor, finalColor, t);
+            t += Time.deltaTime / animationDuration;
+            yield return null;
+        }
+        yield break;
+    }
+
+    private IEnumerator ShowPlayerVisual()
+    {
+
+        Color startColor = _spriteRenderer.material.color;
+        Color finalColor = new Vector4(startColor.r, startColor.g, startColor.b, 1f);
+        float t = 0f;
+        while (t < 1)
+        {
+            _spriteRenderer.material.color = Vector4.Lerp(startColor, finalColor, t);
+            t += Time.deltaTime / animationDuration;
+            yield return null;
+        }
+
+        yield break;
     }
 }
