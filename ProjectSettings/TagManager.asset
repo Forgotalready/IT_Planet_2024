@@ -9,6 +9,7 @@ TagManager:
   - Wall
   - Inventory
   - CameraChangingObject
+  - Food
   - Enemy
   layers:
   - Default
