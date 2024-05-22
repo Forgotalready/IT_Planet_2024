@@ -13,6 +13,7 @@ public class InventorySlot : IReadOnlyInventorySlot
     public InventorySlot(InventorySlotData data)
     {
         _data = data;
+        DefaultImage = _data.DefaultIcon;
     }
 
     public string ItemId
@@ -46,7 +47,7 @@ public class InventorySlot : IReadOnlyInventorySlot
         get => _data.ItemIcon;
         set
         {
-            if(_data.ItemIcon != value)
+            if (_data.ItemIcon != value)
             {
                 _data.ItemIcon = value;
                 ItemImageChanged?.Invoke(value);
@@ -56,5 +57,15 @@ public class InventorySlot : IReadOnlyInventorySlot
 
     public bool IsEmpty => Amount == 0 && string.IsNullOrEmpty(ItemId);
 
-    
+    public Sprite DefaultImage
+    {
+        get => _data.DefaultIcon;
+        set
+        {
+            if (_data.DefaultIcon != value)
+            {
+                _data.DefaultIcon = value;
+            }
+        }
+    }
 }

@@ -42,10 +42,12 @@ public class MouseInputController : MonoBehaviour
     private void InteractionRay()
     {
         Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, _interactionDistance) && hit.collider.tag == "Interactable")
+        if (Physics.Raycast(ray, out hit, _interactionDistance, 1<<8) /*&& hit.collider.tag == "Interactable"*/)
         {
+            
             _interactableObject = hit.collider.gameObject;
 
             if (_interactableObject != null && _interactableObject != _previousInteractableObject)

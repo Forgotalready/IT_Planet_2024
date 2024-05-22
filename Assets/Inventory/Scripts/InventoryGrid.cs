@@ -129,7 +129,7 @@ public class InventoryGrid : IReadOnlyInventoryGrid
                 if(slot.Amount == 0)
                 {
                     slot.ItemId = null;
-                    slot.Image = null;//Нужно подумать над станадртным отображением иконки
+                    slot.Image = slot.DefaultImage;//Нужно подумать над станадртным отображением иконки
                 }
 
                 if (amountToRemove == 0)

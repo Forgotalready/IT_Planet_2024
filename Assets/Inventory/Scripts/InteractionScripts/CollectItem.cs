@@ -20,7 +20,7 @@ public class CollectItem : MonoBehaviour, IInteractable
     void PickUp()
     {
         _outline.enabled = false;
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void Interact()
