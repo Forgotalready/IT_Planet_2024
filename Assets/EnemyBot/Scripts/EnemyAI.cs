@@ -37,6 +37,8 @@ public class EnemyAnimation {
     /// <param name="enemySpeed">Текущая скорость NPC</param>
     /// <param name="maxSpeed">Максимальная скорость NPC</param>
     public void setAnimationSpeed(float enemySpeed, float maxSpeed)  => _animator.SetFloat("Velocity", enemySpeed / maxSpeed);
+
+    public void setEating(bool isEating) => _animator.SetBool("Eats", isEating);
     
 }
 
@@ -185,11 +187,17 @@ public class EnemyAI : MonoBehaviour
     {
         _navMeshAgent.SetDestination(nearFood.transform.position);
         if (Vector3.Distance(nearFood.transform.position, transform.position) < 1.5f) {
+
+            nearFood.GetComponentInChildren<MeshRenderer>().enabled = false;
+
+            _enemyAnimation.setEating(true);
             if (eatingTime < 0) {
                 _state = State.Roaming;
                 eatingTime = maxEatingTime;
                 Destroy(nearFood);
-            }else
+                _enemyAnimation.setEating(false);
+            }
+            else
                 eatingTime -= Time.deltaTime;
         }
 
