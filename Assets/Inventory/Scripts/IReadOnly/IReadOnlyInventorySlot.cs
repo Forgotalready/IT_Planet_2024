@@ -10,5 +10,6 @@ public interface IReadOnlyInventorySlot
     string ItemId {  get; }
     int Amount { get; }
     Sprite Image { get; }
+    Sprite DefaultImage { get; } 
     bool IsEmpty { get; }
 }

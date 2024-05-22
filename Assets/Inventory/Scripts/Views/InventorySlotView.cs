@@ -1,14 +1,18 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class InventorySlotView : MonoBehaviour
+public class InventorySlotView : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private TMP_Text _itemName;
     [SerializeField] private TMP_Text _itemAmount;
     [SerializeField] private Image _itemIcon;
+    [SerializeField] private Sprite _DefaultItemIcon;
+
+    public static Action<string> onClick;
 
 
     public string ItemName
@@ -26,6 +30,11 @@ public class InventorySlotView : MonoBehaviour
     public Sprite GetIcon()
     {
         return _itemIcon.sprite;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        onClick?.Invoke(_itemName.text);
     }
 
     public void SetIcon(Sprite icon)

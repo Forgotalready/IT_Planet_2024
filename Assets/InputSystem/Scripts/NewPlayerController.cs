@@ -32,6 +32,7 @@ public class NewPlayerController : MonoBehaviour
 
     private GameObject _interactableObject;
     private GameObject _previousInteractableObject;
+
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -186,12 +187,16 @@ public class NewPlayerController : MonoBehaviour
         Ray ray = new Ray(_playerVisual.transform.position, _playerVisual.transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, _interactionDistance) && hit.transform.tag == "CameraChangingObject")
+        if (Physics.Raycast(ray, out hit, _interactionDistance, 1<<7) /*&& hit.transform.tag == "CameraChangingObject"*/)
         {
             _interactableObject = hit.collider.gameObject;
             if (_interactableObject != null && _interactableObject != _previousInteractableObject)
             {
                 _interactableObject.GetComponent<IInteractable>().OutlineEnable();
+                if(_previousInteractableObject != null)
+                {
+                    _previousInteractableObject.GetComponent<IInteractable>().OutlineDisable();
+                }
                 _previousInteractableObject = _interactableObject;
             }
         }

@@ -35,12 +35,9 @@ public class CameraChangingInteraction : MonoBehaviour, IInteractable
     {
         _isInteract = !_isInteract;
         _virtualCamera.enabled = _isInteract;
-        if(_isInteract)
-            _outline.enabled = false;
-        else
-            _outline.enabled = true;
+        _outline.enabled = !_isInteract;
 
-        if(_animatorOnObject)
+        if (_animatorOnObject)
         {
             _animator.SetBool("Enter", _isInteract);
         }
