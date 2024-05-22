@@ -12,6 +12,11 @@ public class EnemyAnimation {
     public EnemyAnimation(EnemyAI ai) { 
         _enemyAI = ai;
     }
+
+    /// <summary>
+    /// Настройка анимации.
+    /// Поиск компонента анимации у спрайта.
+    /// </summary>
     public void setupAnimation() {
         Transform thisTransform = _enemyAI.GetComponent<Transform>();
 
@@ -26,6 +31,11 @@ public class EnemyAnimation {
             }
         }
     }
+    /// <summary>
+    /// Установка скорости анимации
+    /// </summary>
+    /// <param name="enemySpeed">Текущая скорость NPC</param>
+    /// <param name="maxSpeed">Максимальная скорость NPC</param>
     public void setAnimationSpeed(float enemySpeed, float maxSpeed)  => _animator.SetFloat("Velocity", enemySpeed / maxSpeed);
     
 }
