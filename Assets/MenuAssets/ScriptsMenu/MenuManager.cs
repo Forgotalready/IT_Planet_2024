@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 
         {
 
-            SceneManager.LoadScene("SampleScene");
+            SceneManager.LoadScene("MainScene");
 
         }
 
