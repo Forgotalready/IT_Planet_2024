@@ -111,7 +111,8 @@ public class EnemyAI : MonoBehaviour
     /// <summary>
     /// Возможные состояния NPC.
     /// </summary>
-    private enum State { 
+    private enum State
+    {
         Roaming,
         PlayerNear,
         FoodDetect
@@ -132,7 +133,7 @@ public class EnemyAI : MonoBehaviour
         foreach (GameObject go in _hideObjects)
         {
             HideObject ho = go.GetComponent<HideObject>();
-            if(ho != null)
+            if (ho != null)
                 ho.playerHide += Hide;
         }
         _navMeshAgent.SetDestination(track[_posNumber].transform.position);
@@ -141,12 +142,13 @@ public class EnemyAI : MonoBehaviour
 
     private void Hide()
     {
-        if (_state == State.PlayerNear) {
-            #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-            #elif UNITY_STANDALONE
+        if (_state == State.PlayerNear)
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_STANDALONE
                 Application.Quit(); 
-            #endif
+#endif
         }
         _isPlayerHide = true;
     }
@@ -164,7 +166,7 @@ public class EnemyAI : MonoBehaviour
             _navMeshAgent.speed = chasingSpeed;
         }
         _enemyAnimation.setAnimationSpeed(_navMeshAgent.speed, chasingSpeed);
-        
+
         switch (_state)
         {
             default:
@@ -186,12 +188,14 @@ public class EnemyAI : MonoBehaviour
     private void foodDetectBehv(GameObject nearFood)
     {
         _navMeshAgent.SetDestination(nearFood.transform.position);
-        if (Vector3.Distance(nearFood.transform.position, transform.position) < 1.5f) {
+        if (Vector3.Distance(nearFood.transform.position, transform.position) < 1.5f)
+        {
 
             nearFood.GetComponentInChildren<MeshRenderer>().enabled = false;
 
             _enemyAnimation.setEating(true);
-            if (eatingTime < 0) {
+            if (eatingTime < 0)
+            {
                 _state = State.Roaming;
                 eatingTime = maxEatingTime;
                 Destroy(nearFood);
@@ -217,9 +221,9 @@ public class EnemyAI : MonoBehaviour
                     result = go;
                 else
                     if (Vector3.Distance(go.transform.position, transform.position) < Vector3.Distance(result.transform.position, transform.position))
-                        result = go;
+                    result = go;
             }
-        return result;       
+        return result;
     }
 
     /// <summary>
@@ -228,7 +232,8 @@ public class EnemyAI : MonoBehaviour
     private void roamingStateMovement()
     {
         _navMeshAgent.SetDestination(track[_posNumber].transform.position);
-        if (Vector3.Distance(track[_posNumber].transform.position, transform.position) < 1.5f){
+        if (Vector3.Distance(track[_posNumber].transform.position, transform.position) < 1.5f)
+        {
             _posNumber = (_posNumber + 1) % track.Count;
             _navMeshAgent.SetDestination(track[_posNumber].transform.position);
         }
@@ -237,11 +242,30 @@ public class EnemyAI : MonoBehaviour
     /// Метод, который заставляет бота догонять игрока.
     /// </summary>
     private void chasingPlayer() => _navMeshAgent.SetDestination(Player.transform.position);
-    
+
     /// <summary>
     /// Метод проверяющий есть ли рядом игрок.
     /// </summary>
     /// <param name="howNear">Степень близости</param>
     /// <returns>Близко ли игрок</returns>
-    private bool isPlayerNear(float howNear)  => (Vector3.Distance(Player.transform.position, transform.position) < howNear);
+    /// 
+    private bool isPlayerNear(float howNear)
+    {
+        RaycastHit hit;
+        if (Physics.BoxCast(transform.position, transform.localScale * 0.5f, transform.forward, out hit))
+        {
+            Debug.Log(hit.collider.gameObject.name);
+            if (hit.collider.gameObject.tag == "Player") return true;
+        }
+        return false;
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        //Draw a Ray forward from GameObject toward the maximum distance
+        Gizmos.DrawRay(transform.position, transform.forward * howNear);
+        //Draw a cube at the maximum distance
+        Gizmos.DrawWireCube(transform.position + transform.forward * howNear, transform.localScale);
+    }
 }
