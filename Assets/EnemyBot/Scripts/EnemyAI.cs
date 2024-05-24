@@ -249,12 +249,14 @@ public class EnemyAI : MonoBehaviour
     /// <param name="howNear">Степень близости</param>
     /// <returns>Близко ли игрок</returns>
     /// 
-    [SerializeField] private float halfDist = 2.0f;
-    [SerializeField] private float _maxDistance = 5.0f;
-
     private bool isPlayerNear(float howNear)
     {
-        if (Physics.BoxCast(transform.position, transform.localScale * 0.5f, transform.forward, transform.rotation, _maxDistance, 1 << 6)) return true;
+        RaycastHit hit;
+        if (Physics.BoxCast(transform.position, transform.localScale * 0.5f, transform.forward, out hit))
+        {
+            Debug.Log(hit.collider.gameObject.name);
+            if (hit.collider.gameObject.tag == "Player") return true;
+        }
         return false;
     }
 
