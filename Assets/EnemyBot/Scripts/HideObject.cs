@@ -17,6 +17,7 @@ public class HideObject : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        Debug.Log("Interact");
         playerHide?.Invoke();
     }
 

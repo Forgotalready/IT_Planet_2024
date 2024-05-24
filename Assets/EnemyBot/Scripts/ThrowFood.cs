@@ -5,7 +5,7 @@ public class ThrowFood : MonoBehaviour
     [SerializeField] private GameObject food;
     [SerializeField] private GameObject cameraObj;
 
-    private float _distance = 1.05f;
+    private float _distance = 1.1f;
     private float _floarPosition = 0.2f;
     void Update()
     {

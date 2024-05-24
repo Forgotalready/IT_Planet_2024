@@ -132,9 +132,12 @@ public class EnemyAI : MonoBehaviour
 
         foreach (GameObject go in _hideObjects)
         {
-            HideObject ho = go.GetComponent<HideObject>();
+            Hide ho = go.GetComponent<Hide>();
             if (ho != null)
+            {
+                Debug.Log("Object assign");
                 ho.playerHide += Hide;
+            }
         }
         _navMeshAgent.SetDestination(track[_posNumber].transform.position);
         _state = startingState;
@@ -150,16 +153,17 @@ public class EnemyAI : MonoBehaviour
                 Application.Quit(); 
 #endif
         }
-        _isPlayerHide = true;
+        _isPlayerHide = !_isPlayerHide;
+        Debug.Log(_isPlayerHide);
     }
 
     private void Update()
     {
         _foodObjects = GameObject.FindGameObjectsWithTag("Food");
         GameObject nearFood = isFoodNear(howNear);
+        //Debug.Log(_isPlayerHide);
         if (!(nearFood == null))
             _state = State.FoodDetect;
-
         else if (isPlayerNear(howNear) && !_isPlayerHide)
         {
             _state = State.PlayerNear;
@@ -241,7 +245,16 @@ public class EnemyAI : MonoBehaviour
     /// <summary>
     /// ћетод, который заставл€ет бота догон€ть игрока.
     /// </summary>
-    private void chasingPlayer() => _navMeshAgent.SetDestination(Player.transform.position);
+    private void chasingPlayer()  {
+        _navMeshAgent.SetDestination(Player.transform.position);
+        if (Vector3.Distance(Player.transform.position, transform.position) < 1.5f) {
+            #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+            #elif UNITY_STANDALONE
+                Application.Quit(); 
+            #endif
+        }
+    }
 
     /// <summary>
     /// ћетод провер€ющий есть ли р€дом игрок.
@@ -254,7 +267,6 @@ public class EnemyAI : MonoBehaviour
         RaycastHit hit;
         if (Physics.BoxCast(transform.position, transform.localScale * 0.5f, transform.forward, out hit))
         {
-            Debug.Log(hit.collider.gameObject.name);
             if (hit.collider.gameObject.tag == "Player") return true;
         }
         return false;
