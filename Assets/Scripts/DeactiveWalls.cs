@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,16 @@ public class DeactiveWalls : MonoBehaviour
     private GameObject hittedObject;
     private float _rayDistance = 5f;
     [SerializeField] private GameObject Player;
+
+    private void OnEnable()
+    {
+        InputManager.inputActions.Gameplay.RotationLeft.started += leftCameraRotate;
+    }
+
+    private void leftCameraRotate(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        
+    }
 
     void FixedUpdate()
     {

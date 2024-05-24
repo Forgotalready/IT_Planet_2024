@@ -33,6 +33,8 @@ public class NewPlayerController : MonoBehaviour
     private GameObject _interactableObject;
     private GameObject _previousInteractableObject;
 
+    private Vector3 _previousPosition;
+
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
