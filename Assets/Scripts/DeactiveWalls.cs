@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,22 @@ using UnityEngine;
 public class DeactiveWalls : MonoBehaviour
 {
     private GameObject hittedObject;
-    [SerializeField] private float _rayDistance = 5f;
+    private float _rayDistance = 5f;
+    [SerializeField] private GameObject Player;
+
+    private void OnEnable()
+    {
+        InputManager.inputActions.Gameplay.RotationLeft.started += leftCameraRotate;
+    }
+
+    private void leftCameraRotate(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        
+    }
+
     void FixedUpdate()
     {
+        _rayDistance = Vector3.Distance(transform.position, Player.transform.position);
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, _rayDistance))
         {
@@ -17,33 +31,39 @@ public class DeactiveWalls : MonoBehaviour
                 if (hittedObject == null)
                 {
                     hittedObject = newObject;
-
-                    MeshRenderer meshRenderer = hittedObject.GetComponent<MeshRenderer>();
-                    if (meshRenderer != null)
-                    {
-                        meshRenderer.enabled = false;
-                    }
-
                     deactivateChilds(hittedObject);
+                    
+                    //MeshRenderer meshRenderer = hittedObject.GetComponent<MeshRenderer>();
+                    //if (meshRenderer != null)
+                    //{
+                    //    meshRenderer.enabled = false;
+                    //}
+
                 }
                 else if (hittedObject != newObject)
                 {
-                    MeshRenderer meshRenderer = hittedObject.GetComponent<MeshRenderer>();
-                    if (meshRenderer != null)
-                    {
-                        meshRenderer.enabled = true;
-                    }
+                    //MeshRenderer meshRenderer = hittedObject.GetComponent<MeshRenderer>();
+                    //if (meshRenderer != null)
+                    //{
+                    //    meshRenderer.enabled = true;
+                    //}
                     activateChilds(hittedObject);
-
-                    meshRenderer = newObject.GetComponent<MeshRenderer>();
-                    if (meshRenderer != null)
-                    {
-                        meshRenderer.enabled = false;
-                    }
+                    //meshRenderer = newObject.GetComponent<MeshRenderer>();
+                    //if (meshRenderer != null)
+                    //{
+                    //    meshRenderer.enabled = false;
+                    //}
                     deactivateChilds(newObject);
-
                     hittedObject = newObject;
                 }
+            }
+            else
+            {
+                if(hittedObject != null)
+                {
+                    activateChilds(hittedObject);
+                }
+                hittedObject = null;
             }
         }
     }

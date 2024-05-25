@@ -8,6 +8,9 @@ TagManager:
   - Interactable
   - Wall
   - Inventory
+  - CameraChangingObject
+  - Food
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -15,9 +18,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Player
+  - ObjectsChangingCamera
+  - Interactable
   - 
   - 
   - 
